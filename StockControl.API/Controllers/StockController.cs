@@ -1,17 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using StockControl.Application.Services;
 using StockControl.Core.Entities;
+using StockControl.Core.Interfaces.Services;
 using StockControl.Core.Requests;
 
 namespace StockControl.API.Controllers
 {
   [ApiController]
   [Route("[controller]")]
-  public class StockController(StockHolderService stockService) : ControllerBase
+  public class StockController(IStockHolderService stockService) : ControllerBase
   {
-    private readonly StockHolderService _stockHolderService = stockService;
+    private readonly IStockHolderService _stockHolderService = stockService;
 
-    [HttpGet("holder")]
+    [HttpGet]
     public List<object> GetStockHolders()
     {
       return _stockHolderService.GetAllStockHolders();

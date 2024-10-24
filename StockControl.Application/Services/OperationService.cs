@@ -9,6 +9,11 @@ namespace StockControl.Application.Services
   {
     protected readonly IUnitOfWork _unitOfWork = unitOfWork;
 
+    public List<StockOperation> GetAllOperations()
+    {
+      return _unitOfWork.OperationRepository.GetAll().ToList();
+    }
+
     public void CreateNewOperation(string stockSymbol, double price, int quantity, OperationType operation)
     {
       var stockOperation = new StockOperation
