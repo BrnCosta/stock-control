@@ -9,15 +9,15 @@ namespace StockControl.Application.Services
   {
     protected readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public void CreateNewOperation(Stock stock, double buyPrice, int quantity)
+    public void CreateNewOperation(string stockSymbol, double price, int quantity, OperationType operation)
     {
       var stockOperation = new StockOperation
       {
         Date = DateTime.Now,
-        OperatingType = OperationType.Buy,
+        OperatingType = operation,
         Quantity = quantity,
-        Price = buyPrice,
-        StockSymbol = stock.Symbol,
+        Price = price,
+        StockSymbol = stockSymbol,
       };
 
       _unitOfWork.OperationRepository.Create(stockOperation);

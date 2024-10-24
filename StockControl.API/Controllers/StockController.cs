@@ -11,16 +11,22 @@ namespace StockControl.API.Controllers
   {
     private readonly StockHolderService _stockHolderService = stockService;
 
-    [HttpPost("buy")]
-    public StockHolder BuyStock([FromBody] BuyStockRequest buyRequest)
-    {
-      return _stockHolderService.BuyStock(buyRequest.StockSymbol, buyRequest.Quantity, buyRequest.Price);
-    }
-
     [HttpGet("holder")]
     public List<object> GetStockHolders()
     {
       return _stockHolderService.GetAllStockHolders();
+    }
+
+    [HttpPost("buy")]
+    public StockHolder BuyStock([FromBody] OperationStockRequest buyRequest)
+    {
+      return _stockHolderService.BuyStock(buyRequest.StockSymbol, buyRequest.Quantity, buyRequest.Price);
+    }
+
+    [HttpPut("sell")]
+    public StockHolder SellStock([FromBody] OperationStockRequest sellRequest)
+    {
+      return _stockHolderService.SellStock(sellRequest.StockSymbol, sellRequest.Quantity, sellRequest.Price);
     }
   }
 }

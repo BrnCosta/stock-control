@@ -29,8 +29,7 @@ namespace StockControl.Infrastructure
       services.AddScoped<IUnitOfWork, UnitOfWork>();
       services.AddScoped<IStockService, StockService>();
       services.AddScoped<IOperationService, OperationService>();
-
-      services.AddScoped<StockHolderService>();
+      services.AddScoped<IStockHolderService, StockHolderService>();
     }
   }
 }
