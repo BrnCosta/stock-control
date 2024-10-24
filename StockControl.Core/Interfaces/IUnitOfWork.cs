@@ -1,5 +1,6 @@
 ﻿using StockControl.Core.Entities;
 using StockControl.Core.Enums;
+using StockControl.Core.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +9,12 @@ using System.Threading.Tasks;
 
 namespace StockControl.Core.Interfaces
 {
-    public interface IUnitOfWork
-    {
-        void CreateIfNewStock(Stock newStock);
+  public interface IUnitOfWork
+  {
+    IStockRepository StockRepository { get; }
+    IStockOperationRepository OperationRepository { get; }
+    IStockHolderRepository StockHolderRepository { get; }
 
-        StockOperation CreateNewOperation(Stock stock, double buyPrice, int quantity);
-
-        Task<StockHolder?> GetStockHolderByStock(string stockSymbol);
-
-        void CreateStockHolder(StockHolder stockHolder);
-
-        void UpdateStockHolder(StockHolder stockHolder);
-
-        Task Commit();
-    }
+    Task Commit();
+  }
 }

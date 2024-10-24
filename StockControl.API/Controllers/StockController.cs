@@ -5,16 +5,22 @@ using StockControl.Core.Requests;
 
 namespace StockControl.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class StockController(StockService stockService) : ControllerBase
-    {
-        private readonly StockService _stockService = stockService;
+  [ApiController]
+  [Route("[controller]")]
+  public class StockController(StockService stockService) : ControllerBase
+  {
+    private readonly StockService _stockService = stockService;
 
-        [HttpPost("buy")]
-        public StockHolder BuyStock([FromBody] BuyStockRequest buyRequest)
-        {
-            return _stockService.BuyNewStock(buyRequest.StockSymbol, buyRequest.Quantity, buyRequest.Price);
-        }
+    [HttpPost("buy")]
+    public StockHolder BuyStock([FromBody] BuyStockRequest buyRequest)
+    {
+      return _stockService.BuyNewStock(buyRequest.StockSymbol, buyRequest.Quantity, buyRequest.Price);
     }
+
+    [HttpGet("holder")]
+    public List<StockHolder> GetStockHolders()
+    {
+      return _stockService.GetAllStockHolders();
+    }
+  }
 }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace StockControl.Core.Interfaces.Repositories
 {
-    public interface IStockHolderRepository : IBaseRepository<StockHolder>
-    {
-        Task<StockHolder?> GetHolderByStock(string stockSymbol);
-    }
+  public interface IStockHolderRepository : IBaseRepository<StockHolder>
+  {
+    Task<StockHolder?> GetStockHolderByStockSymbol(string stockSymbol);
+  }
 }
