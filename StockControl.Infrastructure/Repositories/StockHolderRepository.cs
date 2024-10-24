@@ -12,11 +12,20 @@ namespace StockControl.Infrastructure.Repositories
       return _context.StockHolders.FirstOrDefaultAsync(x => x.StockSymbol == stockSymbol);
     }
 
-    public new IEnumerable<StockHolder> GetAll()
+    public IEnumerable<object> GetFilteredAll()
     {
       return _context.StockHolders
         .AsNoTracking()
-        .Include(e => e.Stock);
+        .Include(e => e.Stock)
+        .Select(e => new
+        {
+          e.Id,
+          e.AveragePrice,
+          e.Quantity,
+          e.StockSymbol,
+          StockPrice = e.Stock.Price,
+          StockType = e.Stock.StockType.ToString()
+        });
     }
   }
 }

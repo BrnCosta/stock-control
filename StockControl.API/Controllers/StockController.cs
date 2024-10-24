@@ -7,20 +7,20 @@ namespace StockControl.API.Controllers
 {
   [ApiController]
   [Route("[controller]")]
-  public class StockController(StockService stockService) : ControllerBase
+  public class StockController(StockHolderService stockService) : ControllerBase
   {
-    private readonly StockService _stockService = stockService;
+    private readonly StockHolderService _stockHolderService = stockService;
 
     [HttpPost("buy")]
     public StockHolder BuyStock([FromBody] BuyStockRequest buyRequest)
     {
-      return _stockService.BuyNewStock(buyRequest.StockSymbol, buyRequest.Quantity, buyRequest.Price);
+      return _stockHolderService.BuyStock(buyRequest.StockSymbol, buyRequest.Quantity, buyRequest.Price);
     }
 
     [HttpGet("holder")]
-    public List<StockHolder> GetStockHolders()
+    public List<object> GetStockHolders()
     {
-      return _stockService.GetAllStockHolders();
+      return _stockHolderService.GetAllStockHolders();
     }
   }
 }
