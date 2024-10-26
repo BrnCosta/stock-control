@@ -1,3 +1,4 @@
+using StockControl.Application.Services;
 using StockControl.Infrastructure;
 using System.Text.Json.Serialization;
 
@@ -5,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.ConfigurePersistenceApp(builder.Configuration);
+
+builder.Services.AddHttpClient();
+builder.Services.AddHostedService<StockPriceUpdateBgService>();
 
 builder.Services.AddControllers().AddJsonOptions(x => 
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -14,6 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+builder.Logging.AddConsole();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
