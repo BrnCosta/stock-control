@@ -1,15 +1,27 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StockControl.Core.Entities;
 using StockControl.Core.Interfaces;
-using StockControl.Core.Interfaces.Services;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace StockControl.Application.Services
 {
-  public class StockPriceUpdateBgService(ILogger<StockPriceUpdateBgService> logger, IHttpClientFactory httpClient, IUnitOfWork unitOfWork) : BackgroundService
+  public class StockPriceUpdateBackgroundService(ILogger<StockPriceUpdateBackgroundService> logger,
+    IHttpClientFactory httpClient, IServiceScopeFactory serviceScope) : BackgroundService
   {
+    private const string BRAPI_QUOTE_URL = "https://brapi.dev/api/quote/";
+    private const string BRAPI_INTERVAL_PARAMS = "?range=1d&interval=1d";
+    private const int UPDATE_TIME_MINUTES = 30;
+    private const string AUTHENTICATION_TOKEN = "13txL2WCFqDiS9eGn9gUQF";
+
+    private readonly ILogger<StockPriceUpdateBackgroundService> _logger = logger;
+    private readonly IHttpClientFactory _httpClient = httpClient;
+
+    private readonly IServiceScopeFactory _serviceScope = serviceScope;
+
     private class StockResult
     {
       public double RegularMarketPrice { get; set; }
@@ -19,14 +31,6 @@ namespace StockControl.Application.Services
     {
       public required List<StockResult> Results { get; set; }
     }
-
-    private const string BRAPI_QUOTE_URL = "https://brapi.dev/api/quote/";
-    private const string BRAPI_INTERVAL_PARAMS = "?range=1d&interval=1d";
-
-    private readonly ILogger<StockPriceUpdateBgService> _logger = logger;
-    private readonly IHttpClientFactory _httpClient = httpClient;
-
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -43,7 +47,7 @@ namespace StockControl.Application.Services
           _logger.LogWarning("Stock market is not open, waiting until commercial time.");
         }
 
-        await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
+        await Task.Delay(TimeSpan.FromMinutes(UPDATE_TIME_MINUTES), stoppingToken);
       }
     }
 
@@ -58,7 +62,7 @@ namespace StockControl.Application.Services
       if (currentTime.DayOfWeek == DayOfWeek.Saturday || currentTime.DayOfWeek == DayOfWeek.Sunday)
         return false;
 
-      if (currentTime.Hour >= 10 && currentTime.Hour <= 19)
+      if (currentTime.Hour <= 10 || currentTime.Hour >= 19)
         return false;
 
       return true;
@@ -72,21 +76,25 @@ namespace StockControl.Application.Services
 
         _logger.LogInformation("Performing API call to update stock prices...");
 
-        var stockHoldersSymbols = GetAllStockHoldersSymbols();
+        using var internScope = _serviceScope.CreateScope();
 
-        foreach(var symbol in stockHoldersSymbols)
+        var unitOfWork = internScope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+        var stockHoldersSymbols = GetAllStockHoldersSymbols(unitOfWork);
+
+        foreach (var symbol in stockHoldersSymbols)
         {
           double actualPrice = GetStockActualPrice(symbol, stoppingToken).GetAwaiter().GetResult();
 
           if (actualPrice == 0.0)
             continue;
 
-          await UpdateStockPrice(symbol, actualPrice);
+          await UpdateStockPrice(symbol, actualPrice, unitOfWork);
         }
       }
       catch (Exception ex)
       {
-        _logger.LogError(ex, "Failed to update stock prices. Trying again in 30 minutes...");
+        _logger.LogError(ex, "Failed to update stock prices. Trying again in ${time} minutes...", UPDATE_TIME_MINUTES);
       }
     }
 
@@ -100,6 +108,8 @@ namespace StockControl.Application.Services
 
         var httpClient = _httpClient.CreateClient();
         _logger.LogInformation("Getting actual price value for ${symbol}", symbol);
+
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AUTHENTICATION_TOKEN);
 
         var response = (await httpClient.GetAsync(apiUrl, stoppingToken)).EnsureSuccessStatusCode();
 
@@ -115,27 +125,27 @@ namespace StockControl.Application.Services
       return actualPrice;
     }
 
-    private List<string> GetAllStockHoldersSymbols()
+    private static List<string> GetAllStockHoldersSymbols(IUnitOfWork unitOfWork)
     {
       var stockHoldersSymbols = new List<string>();
 
-      foreach(var stockHolder in _unitOfWork.StockHolderRepository.GetAll())
+      foreach(var stockHolder in unitOfWork.StockHolderRepository.GetAll())
         stockHoldersSymbols.Add(stockHolder.StockSymbol);
 
       return stockHoldersSymbols;
     }
 
-    private async Task UpdateStockPrice(string symbol, double actualPrice)
+    private async Task UpdateStockPrice(string symbol, double actualPrice, IUnitOfWork unitOfWork)
     {
       try
       {
-        Stock stock = await _unitOfWork.StockRepository.GetAsync(symbol) ?? throw new Exception($"Failed to get {symbol} in database.");
+        Stock stock = await unitOfWork.StockRepository.GetAsync(symbol) ?? throw new Exception($"Failed to get {symbol} in database.");
 
         stock.Price = actualPrice;
 
-        _unitOfWork.StockRepository.Update(stock);
+        unitOfWork.StockRepository.Update(stock);
 
-        await _unitOfWork.Commit();
+        await unitOfWork.Commit();
       }
       catch (Exception ex)
       {

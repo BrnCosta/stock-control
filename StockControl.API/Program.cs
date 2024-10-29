@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigurePersistenceApp(builder.Configuration);
 
 builder.Services.AddHttpClient();
-builder.Services.AddHostedService<StockPriceUpdateBgService>();
+builder.Services.AddHostedService<StockPriceUpdateBackgroundService>();
 
 builder.Services.AddControllers().AddJsonOptions(x => 
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
