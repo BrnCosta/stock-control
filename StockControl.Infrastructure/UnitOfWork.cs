@@ -1,6 +1,4 @@
-﻿using StockControl.Core.Entities;
-using StockControl.Core.Enums;
-using StockControl.Core.Interfaces;
+﻿using StockControl.Core.Interfaces;
 using StockControl.Core.Interfaces.Repositories;
 using StockControl.Infrastructure.Context;
 

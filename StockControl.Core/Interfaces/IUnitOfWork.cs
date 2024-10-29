@@ -1,11 +1,4 @@
-﻿using StockControl.Core.Entities;
-using StockControl.Core.Enums;
-using StockControl.Core.Interfaces.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using StockControl.Core.Interfaces.Repositories;
 
 namespace StockControl.Core.Interfaces
 {

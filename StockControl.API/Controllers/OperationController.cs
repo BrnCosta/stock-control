@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using StockControl.Application.Services;
 using StockControl.Core.Entities;
 using StockControl.Core.Interfaces.Services;
-using StockControl.Core.Requests;
 
 namespace StockControl.API.Controllers
 {
