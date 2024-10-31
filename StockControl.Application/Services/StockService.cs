@@ -29,7 +29,8 @@ namespace StockControl.Application.Services
       {
         Symbol = stockSymbol,
         Price = 0.0,
-        StockType = StockType.Stock
+        StockType = StockType.Stock,
+        LastUpdate = DateTime.Now,
       };
     }
   }

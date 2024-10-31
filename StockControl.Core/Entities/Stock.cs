@@ -8,6 +8,7 @@ namespace StockControl.Core.Entities
     public required string Symbol { get; set; }
     public required double Price { get; set; }
     public required StockType StockType { get; set; }
+    public required DateTime LastUpdate { get; set; }
 
     // Relationships
     [JsonIgnore]
