@@ -3,34 +3,16 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StockControl.Core.Entities;
 using StockControl.Core.Interfaces;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using static System.Formats.Asn1.AsnWriter;
+using StockControl.Core.Interfaces.Services.External;
 
 namespace StockControl.Application.Services
 {
-  public class StockPriceUpdateBackgroundService(ILogger<StockPriceUpdateBackgroundService> logger,
-    IHttpClientFactory httpClient, IServiceScopeFactory serviceScope) : BackgroundService
+  public class StockPriceUpdateBackgroundService(ILogger<StockPriceUpdateBackgroundService> logger, IServiceScopeFactory serviceScope) : BackgroundService
   {
-    private const string BRAPI_QUOTE_URL = "https://brapi.dev/api/quote/";
-    private const string BRAPI_INTERVAL_PARAMS = "?range=1d&interval=1d";
     private const int UPDATE_TIME_MINUTES = 30;
-    private const string AUTHENTICATION_TOKEN = "13txL2WCFqDiS9eGn9gUQF";
 
     private readonly ILogger<StockPriceUpdateBackgroundService> _logger = logger;
-    private readonly IHttpClientFactory _httpClient = httpClient;
-
     private readonly IServiceScopeFactory _serviceScope = serviceScope;
-
-    private class StockResult
-    {
-      public double RegularMarketPrice { get; set; }
-    }
-
-    private class BrApiResponse
-    {
-      public required List<StockResult> Results { get; set; }
-    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -72,19 +54,18 @@ namespace StockControl.Application.Services
     {
       try
       {
-        var httpClient = _httpClient.CreateClient();
-
         _logger.LogInformation("Performing API call to update stock prices...");
 
         using var internScope = _serviceScope.CreateScope();
 
         var unitOfWork = internScope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var stockInformationService = internScope.ServiceProvider.GetRequiredService<IStockInformationService>();
 
         var stockHoldersSymbols = GetAllStockHoldersSymbols(unitOfWork);
 
         foreach (var symbol in stockHoldersSymbols)
         {
-          double actualPrice = GetStockActualPrice(symbol, stoppingToken).GetAwaiter().GetResult();
+          double actualPrice = GetStockActualPrice(symbol, stockInformationService).GetAwaiter().GetResult();
 
           if (actualPrice == 0.0)
             continue;
@@ -98,31 +79,22 @@ namespace StockControl.Application.Services
       }
     }
 
-    private async Task<double> GetStockActualPrice(string symbol, CancellationToken stoppingToken)
+    private async Task<double> GetStockActualPrice(string symbol, IStockInformationService stockInformationService)
     {
-      double actualPrice = 0.0;
-
       try
       {
-        string apiUrl = String.Concat(BRAPI_QUOTE_URL, symbol, BRAPI_INTERVAL_PARAMS);
-
-        var httpClient = _httpClient.CreateClient();
         _logger.LogInformation("Getting actual price value for ${symbol}", symbol);
 
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AUTHENTICATION_TOKEN);
+        StockInformationResult stockInformation = await stockInformationService.GetStockInformation(symbol);
 
-        var response = (await httpClient.GetAsync(apiUrl, stoppingToken)).EnsureSuccessStatusCode();
-
-        var jsonResponse = await response.Content.ReadFromJsonAsync<BrApiResponse>(stoppingToken);
-
-        actualPrice = jsonResponse?.Results.FirstOrDefault()?.RegularMarketPrice ?? throw new Exception("Cannot retrieve stock actual price.");
+        return stockInformation.RegularMarketPrice;
       }
       catch (Exception ex)
       {
         _logger.LogError(ex, "Error while getting actual price from ${symbol}", symbol);
       }
 
-      return actualPrice;
+      return 0.0;
     }
 
     private static List<string> GetAllStockHoldersSymbols(IUnitOfWork unitOfWork)
