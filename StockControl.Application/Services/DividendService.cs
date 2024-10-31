@@ -8,6 +8,11 @@ namespace StockControl.Application.Services
   {
     protected readonly IUnitOfWork _unitOfWork = unitOfWork;
 
+    public List<Dividend> GetAll()
+    {
+      return _unitOfWork.DividendRepository.GetAll().ToList();
+    }
+
     public void CreateNewDividend(string stockSymbol, double value, DateOnly date)
     {
       _ = _unitOfWork.StockHolderRepository.GetStockHolderByStockSymbol(stockSymbol).GetAwaiter().GetResult()
@@ -21,6 +26,8 @@ namespace StockControl.Application.Services
       };
 
       _unitOfWork.DividendRepository.Create(dividend);
+
+      _unitOfWork.Commit();
     }
   }
 }

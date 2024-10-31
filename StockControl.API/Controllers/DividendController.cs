@@ -12,10 +12,16 @@ namespace StockControl.API.Controllers
   {
     private readonly IDividendService _dividendService = dividendService;
 
+    [HttpGet]
+    public List<Dividend> GetAll()
+    {
+      return _dividendService.GetAll();
+    }
+
     [HttpPost]
     public IActionResult CreateNewDividend([FromBody] DividendRequest request)
     {
-      _dividendService.CreateNewDividend(request.StockSymbol, request.Value, DateOnly.FromDateTime(request.Date));
+      _dividendService.CreateNewDividend(request.StockSymbol, request.Value, request.Date);
 
       return Created();
     }
