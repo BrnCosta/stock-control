@@ -10,6 +10,7 @@ namespace StockControl.Application.Services
   public class StockPriceUpdateBackgroundService(ILogger<StockPriceUpdateBackgroundService> logger, IServiceScopeFactory serviceScope) : BackgroundService
   {
     private const int UPDATE_TIME_MINUTES = 30;
+    private readonly bool IsDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
 
     private readonly ILogger<StockPriceUpdateBackgroundService> _logger = logger;
     private readonly IServiceScopeFactory _serviceScope = serviceScope;
@@ -20,9 +21,9 @@ namespace StockControl.Application.Services
 
       while (!stoppingToken.IsCancellationRequested)
       {
-        if (IsWithinBusinessHours(DateTime.Now))
+        if (IsWithinBusinessHours(DateTime.Now) && !IsDevelopment)
         {
-          PerformStockUpdate(stoppingToken);
+          PerformStockUpdate();
         }
         else
         {
@@ -50,7 +51,7 @@ namespace StockControl.Application.Services
       return true;
     }
 
-    private async void PerformStockUpdate(CancellationToken stoppingToken)
+    private async void PerformStockUpdate()
     {
       try
       {
