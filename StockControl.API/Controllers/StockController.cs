@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using StockControl.Core.Entities;
 using StockControl.Core.Interfaces.Services;
 using StockControl.Core.Requests;
+using StockControl.Core.Responses;
 
 namespace StockControl.API.Controllers
 {
@@ -12,9 +13,9 @@ namespace StockControl.API.Controllers
     private readonly IStockHolderService _stockHolderService = stockService;
 
     [HttpGet]
-    public List<object> GetStockHolders()
+    public List<StockHolderOverviewResponse> GetStockHolders()
     {
-      return _stockHolderService.GetAllStockHolders();
+      return _stockHolderService.GetStockHoldersOverview();
     }
 
     [HttpPost("buy")]

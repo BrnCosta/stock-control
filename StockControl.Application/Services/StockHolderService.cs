@@ -2,6 +2,7 @@
 using StockControl.Core.Enums;
 using StockControl.Core.Interfaces;
 using StockControl.Core.Interfaces.Services;
+using StockControl.Core.Responses;
 
 namespace StockControl.Application.Services
 {
@@ -11,7 +12,7 @@ namespace StockControl.Application.Services
     protected readonly IStockService _stockService = stockService;
     protected readonly IOperationService _operationService = operationService;
 
-    public List<object> GetAllStockHolders()
+    public List<StockHolderOverviewResponse> GetStockHoldersOverview()
     {
       return _unitOfWork.StockHolderRepository.GetFilteredAll().ToList();
     }
