@@ -1,6 +1,6 @@
 @StockControl.API_HostAddress = http://localhost:5011
 
-GET {{StockControl.API_HostAddress}}/weatherforecast/
+GET {{StockControl.API_HostAddress}}/dividend/
 Accept: application/json
 
 ###
