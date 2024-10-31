@@ -14,5 +14,6 @@ namespace StockControl.Core.Entities
     [JsonIgnore]
     public StockHolder? StockHolder { get; set; }
     public ICollection<StockOperation> StockOperations { get; } = [];
+    public ICollection<Dividend> Dividends { get; } = [];
   }
 }
