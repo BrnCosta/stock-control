@@ -11,6 +11,11 @@ namespace StockControl.Application.Services
     protected readonly IUnitOfWork _unitOfWork = unitOfWork;
     protected readonly IStockInformationService _stockInformationService = stockInformationService;
 
+    public DateTime GetLatestUpdate()
+    {
+      return _unitOfWork.StockRepository.GetLatestUpdate();
+    }
+
     public Stock CreateIfNewStock(string stockSymbol)
     {
       Stock? stock = _unitOfWork.StockRepository.GetAsync(stockSymbol).GetAwaiter().GetResult();
