@@ -2,7 +2,7 @@
 {
   public class Dividend
   {
-    public required int Id { get; set; }
+    public int? Id { get; set; }
     public required double Value { get; set; }
     public required DateOnly Date { get; set; }
 

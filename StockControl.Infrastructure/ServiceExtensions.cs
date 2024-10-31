@@ -22,17 +22,21 @@ namespace StockControl.Infrastructure
               db => db.MigrationsAssembly("StockControl.API"))
       );
 
+      services.AddScoped<IUnitOfWork, UnitOfWork>();
+
       // Repositorioes
       services.AddScoped<IStockRepository, StockRepository>();
       services.AddScoped<IStockHolderRepository, StockHolderRepository>();
       services.AddScoped<IStockOperationRepository, StockOperationRepository>();
-
-      services.AddScoped<IUnitOfWork, UnitOfWork>();
+      services.AddScoped<IDividendRepository, DividendRepository>();
 
       // Services
       services.AddScoped<IStockService, StockService>();
       services.AddScoped<IOperationService, OperationService>();
       services.AddScoped<IStockHolderService, StockHolderService>();
+      services.AddScoped<IDividendService, DividendService>();
+
+      // External
       services.AddScoped<IStockInformationService, StockInformationService>();
     }
   }

@@ -4,7 +4,7 @@ using StockControl.Infrastructure.Context;
 
 namespace StockControl.Infrastructure.Repositories
 {
-  public class StockOperationRepository(AppDbContext context) : BaseRepository<StockOperation>(context), IStockOperationRepository
+  public class DividendRepository(AppDbContext context) : BaseRepository<Dividend>(context), IDividendRepository
   {
   }
 }
