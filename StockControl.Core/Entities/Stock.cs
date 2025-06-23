@@ -8,10 +8,12 @@ namespace StockControl.Core.Entities
     public required string Symbol { get; set; }
     public required double Price { get; set; }
     public required StockType StockType { get; set; }
+    public required DateTime LastUpdate { get; set; }
 
     // Relationships
     [JsonIgnore]
     public StockHolder? StockHolder { get; set; }
     public ICollection<StockOperation> StockOperations { get; } = [];
+    public ICollection<Dividend> Dividends { get; } = [];
   }
 }

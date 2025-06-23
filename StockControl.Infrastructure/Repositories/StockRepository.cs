@@ -5,11 +5,18 @@ using StockControl.Infrastructure.Context;
 
 namespace StockControl.Infrastructure.Repositories
 {
-    public class StockRepository(AppDbContext context) : BaseRepository<Stock>(context), IStockRepository
+  public class StockRepository(AppDbContext context) : BaseRepository<Stock>(context), IStockRepository
+  {
+    public async Task<Stock?> GetAsync(string symbol)
     {
-        public async Task<Stock?> GetAsync(string symbol)
-        {
-            return await _context.Stocks.FirstOrDefaultAsync(x => x.Symbol.Equals(symbol));
-        }
+      return await _context.Stocks.FirstOrDefaultAsync(x => x.Symbol.Equals(symbol));
     }
+
+    public DateTime GetLatestUpdate()
+    {
+      return _context.Stocks
+        .AsNoTracking()
+        .Max(e => e.LastUpdate);
+    }
+  }
 }

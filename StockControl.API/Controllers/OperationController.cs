@@ -11,7 +11,7 @@ namespace StockControl.API.Controllers
     private readonly IOperationService _operationService = operationService;
 
     [HttpGet]
-    public List<StockOperation> GetStockHolders()
+    public List<StockOperation> GetAllOperations()
     {
       return _operationService.GetAllOperations();
     }

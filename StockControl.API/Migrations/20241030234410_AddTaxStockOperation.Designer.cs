@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockControl.Infrastructure.Context;
 
@@ -10,42 +11,18 @@ using StockControl.Infrastructure.Context;
 namespace StockControl.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241030234410_AddTaxStockOperation")]
+    partial class AddTaxStockOperation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
 
-            modelBuilder.Entity("StockControl.Core.Entities.Dividend", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("StockSymbol")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("REAL");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StockSymbol");
-
-                    b.ToTable("Dividends");
-                });
-
             modelBuilder.Entity("StockControl.Core.Entities.Stock", b =>
                 {
                     b.Property<string>("Symbol")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastUpdate")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Price")
@@ -115,15 +92,6 @@ namespace StockControl.API.Migrations
                     b.ToTable("StockOperations");
                 });
 
-            modelBuilder.Entity("StockControl.Core.Entities.Dividend", b =>
-                {
-                    b.HasOne("StockControl.Core.Entities.Stock", null)
-                        .WithMany("Dividends")
-                        .HasForeignKey("StockSymbol")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("StockControl.Core.Entities.StockHolder", b =>
                 {
                     b.HasOne("StockControl.Core.Entities.Stock", "Stock")
@@ -146,8 +114,6 @@ namespace StockControl.API.Migrations
 
             modelBuilder.Entity("StockControl.Core.Entities.Stock", b =>
                 {
-                    b.Navigation("Dividends");
-
                     b.Navigation("StockHolder");
 
                     b.Navigation("StockOperations");

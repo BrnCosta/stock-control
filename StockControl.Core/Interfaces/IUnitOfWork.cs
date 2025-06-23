@@ -7,6 +7,7 @@ namespace StockControl.Core.Interfaces
     IStockRepository StockRepository { get; }
     IStockOperationRepository OperationRepository { get; }
     IStockHolderRepository StockHolderRepository { get; }
+    IDividendRepository DividendRepository { get; }
 
     Task Commit();
   }
