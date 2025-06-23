@@ -84,12 +84,12 @@ namespace StockControl.Application.Services
 
         foreach (var symbol in stockHoldersSymbols)
         {
-          double actualPrice = GetStockActualPrice(symbol, stoppingToken).GetAwaiter().GetResult();
+          double currentPrice = GetStockCurrentPrice(symbol, stoppingToken).GetAwaiter().GetResult();
 
-          if (actualPrice == 0.0)
+          if (currentPrice == 0.0)
             continue;
 
-          await UpdateStockPrice(symbol, actualPrice, unitOfWork);
+          await UpdateStockPrice(symbol, currentPrice, unitOfWork);
         }
       }
       catch (Exception ex)
@@ -98,9 +98,9 @@ namespace StockControl.Application.Services
       }
     }
 
-    private async Task<double> GetStockActualPrice(string symbol, CancellationToken stoppingToken)
+    private async Task<double> GetStockCurrentPrice(string symbol, CancellationToken stoppingToken)
     {
-      double actualPrice = 0.0;
+      double currentPrice = 0.0;
 
       try
       {
@@ -115,14 +115,14 @@ namespace StockControl.Application.Services
 
         var jsonResponse = await response.Content.ReadFromJsonAsync<BrApiResponse>(stoppingToken);
 
-        actualPrice = jsonResponse?.Results.FirstOrDefault()?.RegularMarketPrice ?? throw new Exception("Cannot retrieve stock actual price.");
+        currentPrice = jsonResponse?.Results.FirstOrDefault()?.RegularMarketPrice ?? throw new Exception("Cannot retrieve stock actual price.");
       }
       catch (Exception ex)
       {
         _logger.LogError(ex, "Error while getting actual price from ${symbol}", symbol);
       }
 
-      return actualPrice;
+      return currentPrice;
     }
 
     private static List<string> GetAllStockHoldersSymbols(IUnitOfWork unitOfWork)
@@ -135,13 +135,13 @@ namespace StockControl.Application.Services
       return stockHoldersSymbols;
     }
 
-    private async Task UpdateStockPrice(string symbol, double actualPrice, IUnitOfWork unitOfWork)
+    private async Task UpdateStockPrice(string symbol, double currentPrice, IUnitOfWork unitOfWork)
     {
       try
       {
         Stock stock = await unitOfWork.StockRepository.GetAsync(symbol) ?? throw new Exception($"Failed to get {symbol} in database.");
 
-        stock.Price = actualPrice;
+        stock.Price = currentPrice;
 
         unitOfWork.StockRepository.Update(stock);
 

@@ -123,10 +123,10 @@ namespace StockControl.Application.Services
     {
       try
       {
-        double actualPrice = stockHolder.AveragePrice * stockHolder.Quantity;
+        double currentPrice = stockHolder.AveragePrice * stockHolder.Quantity;
         int totalQuantity = buyQuantity + stockHolder.Quantity;
 
-        double newAveragePrice = (actualPrice + (buyPrice * buyQuantity)) / totalQuantity;
+        double newAveragePrice = (currentPrice + (buyPrice * buyQuantity)) / totalQuantity;
 
         return newAveragePrice;
       }
