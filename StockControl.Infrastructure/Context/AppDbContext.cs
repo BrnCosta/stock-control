@@ -9,6 +9,7 @@ namespace StockControl.Infrastructure.Context
     public DbSet<StockHolder> StockHolders { get; set; }
     public DbSet<StockOperation> StockOperations { get; set; }
     public DbSet<Dividend> Dividends { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,6 +26,16 @@ namespace StockControl.Infrastructure.Context
       modelBuilder.Entity<Dividend>()
         .Property(e => e.Id)
         .ValueGeneratedOnAdd();
+
+      modelBuilder.Entity<Transaction>()
+        .Property(e => e.Id)
+        .ValueGeneratedOnAdd();
+
+      modelBuilder.Entity<Transaction>()
+        .HasMany(t => t.StockOperations)
+        .WithOne(op => op.Transaction!)
+        .HasForeignKey(op => op.TransactionId)
+        .OnDelete(DeleteBehavior.Cascade);
     }
   }
 }

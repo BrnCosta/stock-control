@@ -6,11 +6,9 @@ using StockControl.Core.Responses;
 
 namespace StockControl.Application.Services
 {
-  public class StockHolderService(IUnitOfWork unitOfWork, IStockService stockService, IOperationService operationService) : IStockHolderService
+  public class StockHolderService(IUnitOfWork unitOfWork) : IStockHolderService
   {
     protected readonly IUnitOfWork _unitOfWork = unitOfWork;
-    protected readonly IStockService _stockService = stockService;
-    protected readonly IOperationService _operationService = operationService;
 
     public List<StockHolderOverviewResponse> GetStockHoldersOverview()
     {
@@ -57,7 +55,7 @@ namespace StockControl.Application.Services
       }
     }
 
-    private StockHolder CreateOrUpdateStockHolder(Stock stock, int buyQuantity, double buyPrice)
+    public StockHolder CreateOrUpdateStockHolder(Stock stock, int buyQuantity, double buyPrice)
     {
       StockHolder? stockHolder = _unitOfWork.StockHolderRepository.GetStockHolderByStockSymbol(stock.Symbol).GetAwaiter().GetResult();
 
@@ -67,58 +65,19 @@ namespace StockControl.Application.Services
       return UpdateBuyStockHolder(buyQuantity, buyPrice, stockHolder);
     }
 
-    public StockHolder BuyStock(string stockSymbol, int buyQuantity, double buyPrice)
-    {
-      try
-      {
-        Stock stock = _stockService.CreateIfNewStock(stockSymbol);
-
-        _operationService.CreateNewOperation(stock.Symbol, buyPrice, buyQuantity, OperationType.Buy);
-
-        StockHolder stockHolder = CreateOrUpdateStockHolder(stock, buyQuantity, buyPrice);
-
-        _unitOfWork.Commit();
-
-        return stockHolder;
-      }
-      catch (Exception ex)
-      {
-        throw new Exception($"Error while buying stock: {ex.Message}", ex);
-      }
-    }
-
-    private StockHolder UpdateSellStockHolder(int sellQuantity, StockHolder stockHolder)
+    public void UpdateSellStockHolder(int sellQuantity, StockHolder stockHolder)
     {
       try
       {
         stockHolder.Quantity -= sellQuantity;
 
         _unitOfWork.StockHolderRepository.Update(stockHolder);
-
-        return stockHolder;
       }
       catch (Exception ex)
       {
         throw new Exception($"Failed to update StockHolder: {ex.Message}", ex);
       }
-    }
-
-    public StockHolder SellStock(string stockSymbol, int sellQuantity, double sellPrice)
-    {
-      StockHolder? stockHolder = _unitOfWork.StockHolderRepository.GetStockHolderByStockSymbol(stockSymbol).GetAwaiter().GetResult() 
-        ?? throw new ArgumentException($"There is no avaiable stock {stockSymbol} to sell.");
-
-      if (stockHolder.Quantity < sellQuantity)
-        throw new ArgumentException($"Quantity informed is bigger than avaiable. Quantity: {sellQuantity} Available: {stockHolder.Quantity}");
-
-      stockHolder = UpdateSellStockHolder(sellQuantity, stockHolder);
-
-      _operationService.CreateNewOperation(stockHolder.StockSymbol, sellPrice, sellQuantity, OperationType.Sell);
-
-      _unitOfWork.Commit();
-
-      return stockHolder;
-    }
+    }    
 
     private static double CalculateAveragePrice(StockHolder stockHolder, double buyPrice, int buyQuantity)
     {

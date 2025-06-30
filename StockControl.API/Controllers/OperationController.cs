@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StockControl.Core.Entities;
 using StockControl.Core.Interfaces.Services;
+using StockControl.Core.Requests;
 
 namespace StockControl.API.Controllers
 {
@@ -14,6 +15,13 @@ namespace StockControl.API.Controllers
     public List<StockOperation> GetAllOperations()
     {
       return _operationService.GetAllOperations();
+    }
+
+    [HttpPost]
+    public IResult AddTransaction([FromBody] TransactionRequest transaction)
+    {
+      _operationService.CreateNewTransaction(transaction);
+      return Results.Created();
     }
   }
 }

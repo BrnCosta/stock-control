@@ -1,5 +1,6 @@
 ﻿using StockControl.Core.Entities;
 using StockControl.Core.Enums;
+using StockControl.Core.Requests;
 
 namespace StockControl.Core.Interfaces.Services
 {
@@ -7,6 +8,6 @@ namespace StockControl.Core.Interfaces.Services
   {
     List<StockOperation> GetAllOperations();
 
-    void CreateNewOperation(string stockSymbol, double price, int quantity, OperationType operation);
+    void CreateNewTransaction(TransactionRequest transaction);
   }
 }

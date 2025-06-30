@@ -24,17 +24,5 @@ namespace StockControl.API.Controllers
     {
       return _stockService.GetLatestUpdate();
     }
-
-    [HttpPost("buy")]
-    public StockHolder BuyStock([FromBody] OperationStockRequest buyRequest)
-    {
-      return _stockHolderService.BuyStock(buyRequest.StockSymbol, buyRequest.Quantity, buyRequest.Price);
-    }
-
-    [HttpPut("sell")]
-    public StockHolder SellStock([FromBody] OperationStockRequest sellRequest)
-    {
-      return _stockHolderService.SellStock(sellRequest.StockSymbol, sellRequest.Quantity, sellRequest.Price);
-    }
   }
 }

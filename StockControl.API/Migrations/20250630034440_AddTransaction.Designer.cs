@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockControl.Infrastructure.Context;
 
@@ -10,9 +11,11 @@ using StockControl.Infrastructure.Context;
 namespace StockControl.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250630034440_AddTransaction")]
+    partial class AddTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
@@ -109,29 +112,7 @@ namespace StockControl.API.Migrations
 
                     b.HasIndex("StockSymbol");
 
-                    b.HasIndex("TransactionId");
-
                     b.ToTable("StockOperations");
-                });
-
-            modelBuilder.Entity("StockControl.Core.Entities.Transaction", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<double?>("Tax")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("REAL");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("StockControl.Core.Entities.Dividend", b =>
@@ -161,12 +142,6 @@ namespace StockControl.API.Migrations
                         .HasForeignKey("StockSymbol")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("StockControl.Core.Entities.Transaction", null)
-                        .WithMany("StockOperations")
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("StockControl.Core.Entities.Stock", b =>
@@ -175,11 +150,6 @@ namespace StockControl.API.Migrations
 
                     b.Navigation("StockHolder");
 
-                    b.Navigation("StockOperations");
-                });
-
-            modelBuilder.Entity("StockControl.Core.Entities.Transaction", b =>
-                {
                     b.Navigation("StockOperations");
                 });
 #pragma warning restore 612, 618
