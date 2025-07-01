@@ -1,4 +1,5 @@
 ﻿using StockControl.Core.Enums;
+using System.Text.Json.Serialization;
 
 namespace StockControl.Core.Entities
 {
@@ -10,7 +11,9 @@ namespace StockControl.Core.Entities
     public required OperationType OperatingType { get; set; }
 
     // Relationships
+    [JsonIgnore]
     public int? TransactionId { get; set; }
+    [JsonIgnore]
     public Transaction? Transaction { get; set; }
 
     public required string StockSymbol { get; set; }

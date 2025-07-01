@@ -27,12 +27,12 @@ namespace StockControl.Infrastructure
       // Repositorioes
       services.AddScoped<IStockRepository, StockRepository>();
       services.AddScoped<IStockHolderRepository, StockHolderRepository>();
-      services.AddScoped<IStockOperationRepository, StockOperationRepository>();
+      services.AddScoped<ITransactionRepository, TransactionRepository>();
       services.AddScoped<IDividendRepository, DividendRepository>();
 
       // Services
       services.AddScoped<IStockService, StockService>();
-      services.AddScoped<IOperationService, OperationService>();
+      services.AddScoped<ITransactionService, TransactionService>();
       services.AddScoped<IStockHolderService, StockHolderService>();
       services.AddScoped<IDividendService, DividendService>();
 

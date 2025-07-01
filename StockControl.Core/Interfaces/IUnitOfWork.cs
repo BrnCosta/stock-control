@@ -5,7 +5,7 @@ namespace StockControl.Core.Interfaces
   public interface IUnitOfWork
   {
     IStockRepository StockRepository { get; }
-    IStockOperationRepository OperationRepository { get; }
+    ITransactionRepository TransactionRepository { get; }
     IStockHolderRepository StockHolderRepository { get; }
     IDividendRepository DividendRepository { get; }
 
