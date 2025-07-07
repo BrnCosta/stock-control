@@ -20,6 +20,19 @@ builder.Services.AddSwaggerGen();
 
 builder.Configuration.AddEnvironmentVariables();
 
+var frontendCorsPolicy = "_frontendOrigin";
+
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy(name: frontendCorsPolicy,
+    policy =>
+    {
+      policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 builder.Logging.AddConsole();
@@ -27,11 +40,14 @@ builder.Logging.AddConsole();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+
   // Load Environment Variables from .env file
   DotEnv.Load();
 
   app.UseSwagger();
   app.UseSwaggerUI();
+
+  app.UseCors(frontendCorsPolicy);
 }
 
 app.UseHttpsRedirection();
