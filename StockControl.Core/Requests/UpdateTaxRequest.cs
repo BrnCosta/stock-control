@@ -9,6 +9,6 @@ namespace StockControl.Core.Requests
   public class UpdateTaxRequest
   {
     public required int TransactionId { get; set; }
-    public required double TaxValue { get; set; }
+    public required decimal TaxValue { get; set; }
   }
 }

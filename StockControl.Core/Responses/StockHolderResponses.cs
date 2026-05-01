@@ -1,15 +1,15 @@
 ﻿namespace StockControl.Core.Responses
 {
-  public class StockHolderOverviewResponse
+  public class PositionOverviewResponse
   {
-    public required string StockSymbol { get; set; }
-    public required double AveragePrice { get; set; }
+    public required string Ticker { get; set; }
+    public required decimal AveragePrice { get; set; }
     public required int Quantity { get; set; }
-    public double TotalInvested { get; set; }
-    public required double Price { get; set; }
-    public double CurrentPrice { get; set; }
-    public double CurrentGain { get; set; }
-    public double GainPercentage { get; set; }
-    public required string StockType { get; set; }
+    public decimal TotalInvested { get; set; }
+    public required decimal Price { get; set; }
+    public decimal CurrentPrice { get; set; }
+    public decimal CurrentGain { get; set; }
+    public decimal GainPercentage { get; set; }
+    public required string AssetType { get; set; }
   }
 }

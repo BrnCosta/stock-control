@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StockControl.Core.Interfaces;
+using StockControl.Core.Interfaces.Repositories;
 using StockControl.Infrastructure.Context;
 
 namespace StockControl.Infrastructure.Repositories

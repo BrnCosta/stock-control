@@ -1,12 +1,17 @@
-﻿using StockControl.Core.Entities;
+﻿using StockControl.Core.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace StockControl.Core.Requests
 {
   public class TransactionRequest
   {
-    public required double Value { get; set; }
-    public required DateOnly Date { get; set; }
-    public required ICollection<StockOperationRequest> StockOperations { get; set; } = [];
-    public double? Tax { get; set; }
+    public required string Ticker { get; set; }
+    public required int Quantity { get; set; }
+    public required decimal Price { get; set; }
+    public required OperationType OperatingType { get; set; }
   }
 }

@@ -10,11 +10,11 @@ namespace StockControl.Core.Responses
   {
     public int Year { get; set; }
     public int Month { get; set; }
-    public double TotalValue { get; set; }
+    public decimal TotalValue { get; set; }
   }
 
-  public class DividendGroupBySymbolResponse : DividendGroupByMonthResponse
+  public class DividendGroupByTickerResponse : DividendGroupByMonthResponse
   {
-    public required string StockSymbol { get; set; }
+    public required string Asset { get; set; }
   }
 }

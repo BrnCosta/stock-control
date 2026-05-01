@@ -1,12 +1,12 @@
 ﻿namespace StockControl.Core.Entities
 {
-  public class Dividend
-  {
-    public int? Id { get; set; }
-    public required double Value { get; set; }
-    public required DateOnly Date { get; set; }
+    public class Dividend
+    {
+        public Guid Id { get; set; }
+        public required decimal Value { get; set; }
+        public required DateTime Date { get; set; }
 
-    //Relationships
-    public required string StockSymbol { get; set; }
-  }
+        public Guid AssetId { get; set; }
+        public Asset Asset { get; set; }
+    }
 }

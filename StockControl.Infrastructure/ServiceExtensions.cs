@@ -12,32 +12,34 @@ using StockControl.Infrastructure.Repositories;
 
 namespace StockControl.Infrastructure
 {
-  public static class ServiceExtensions
-  {
-    public static void ConfigurePersistenceApp(this IServiceCollection services, IConfiguration configuration)
+    public static class ServiceExtensions
     {
-      services.AddDbContext<AppDbContext>(
-          opt => opt.UseSqlite(
-              configuration.GetConnectionString("Sqlite"),
-              db => db.MigrationsAssembly("StockControl.API"))
-      );
+        public static void ConfigurePersistenceApp(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<AppDbContext>(
+                opt => opt.UseSqlite(
+                    configuration.GetConnectionString("Sqlite"),
+                    db => db.MigrationsAssembly("StockControl.API"))
+            );
 
-      services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-      // Repositorioes
-      services.AddScoped<IStockRepository, StockRepository>();
-      services.AddScoped<IStockHolderRepository, StockHolderRepository>();
-      services.AddScoped<ITransactionRepository, TransactionRepository>();
-      services.AddScoped<IDividendRepository, DividendRepository>();
+            // Repositorioes
+            services.AddScoped<IAssetRepository, AssetRepository>();
+            services.AddScoped<IPositionRepository, PositionRepository>();
+            services.AddScoped<ITradeRepository, TradeRepository>();
+            services.AddScoped<IDividendRepository, DividendRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
-      // Services
-      services.AddScoped<IStockService, StockService>();
-      services.AddScoped<ITransactionService, TransactionService>();
-      services.AddScoped<IStockHolderService, StockHolderService>();
-      services.AddScoped<IDividendService, DividendService>();
+            // Services
+            services.AddScoped<IAssetService, AssetService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IPositionService, PositionService>();
+            services.AddScoped<IDividendService, DividendService>();
+            services.AddScoped<ITransactionService, TransactionService>();
 
-      // External
-      services.AddScoped<IStockInformationService, StockInformationService>();
+            // External
+            services.AddScoped<IAssetInformationService, BrApiInformationService>();
+        }
     }
-  }
 }

@@ -2,13 +2,14 @@
 
 namespace StockControl.Core.Interfaces
 {
-  public interface IUnitOfWork
-  {
-    IStockRepository StockRepository { get; }
-    ITransactionRepository TransactionRepository { get; }
-    IStockHolderRepository StockHolderRepository { get; }
-    IDividendRepository DividendRepository { get; }
+    public interface IUnitOfWork
+    {
+        IAssetRepository AssetRepository { get; }
+        ITradeRepository TradeRepository { get; }
+        IPositionRepository PositionRepository { get; }
+        IDividendRepository DividendRepository { get; }
+        ITransactionRepository TransactionRepository { get; }
 
-    Task Commit();
-  }
+        Task Commit();
+    }
 }

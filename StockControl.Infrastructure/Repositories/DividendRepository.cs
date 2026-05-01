@@ -23,21 +23,21 @@ namespace StockControl.Infrastructure.Repositories
         .ThenBy(summary => summary.Month);
     }
 
-    public IEnumerable<DividendGroupBySymbolResponse> GetDividendsGroupedBySymbol()
+    public IEnumerable<DividendGroupByTickerResponse> GetDividendsGroupedBySymbol()
     {
       return _context.Dividends
         .AsNoTracking()
-        .GroupBy(d => new { d.StockSymbol, d.Date.Year, d.Date.Month })
-        .Select(g => new DividendGroupBySymbolResponse
+        .GroupBy(d => new { d.Asset.Ticker, d.Date.Year, d.Date.Month })
+        .Select(g => new DividendGroupByTickerResponse
         {
           Year = g.Key.Year,
           Month = g.Key.Month,
           TotalValue = g.Sum(d => d.Value),
-          StockSymbol = g.Key.StockSymbol
+          Asset = g.Key.Ticker
         })
         .OrderBy(summary => summary.Year)
         .ThenBy(summary => summary.Month)
-        .ThenBy(summary => summary.StockSymbol);
+        .ThenBy(summary => summary.Asset);
     }
   }
 }

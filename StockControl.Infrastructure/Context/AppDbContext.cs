@@ -3,39 +3,58 @@ using StockControl.Core.Entities;
 
 namespace StockControl.Infrastructure.Context
 {
-  public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
-  {
-    public DbSet<Stock> Stocks { get; set; }
-    public DbSet<StockHolder> StockHolders { get; set; }
-    public DbSet<StockOperation> StockOperations { get; set; }
-    public DbSet<Dividend> Dividends { get; set; }
-    public DbSet<Transaction> Transactions { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
-      modelBuilder.Entity<Stock>().HasKey(e => e.Symbol);
+        public DbSet<Asset> Assets { get; set; }
+        public DbSet<Position> Positions { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Dividend> Dividends { get; set; }
+        public DbSet<Trade> Trades { get; set; }
 
-      modelBuilder.Entity<StockHolder>()
-          .Property(e => e.Id)
-          .ValueGeneratedOnAdd();
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Asset>(a =>
+            {
+                a.HasKey(x => x.Id);
 
-      modelBuilder.Entity<StockOperation>()
-          .Property(e => e.Id)
-          .ValueGeneratedOnAdd();
+                a.HasIndex(a => a.Ticker)
+                    .IsUnique();
+            });
 
-      modelBuilder.Entity<Dividend>()
-        .Property(e => e.Id)
-        .ValueGeneratedOnAdd();
+            modelBuilder.Entity<Position>(p =>
+            {
+                p.HasKey(x => x.AssetId);
 
-      modelBuilder.Entity<Transaction>()
-        .Property(e => e.Id)
-        .ValueGeneratedOnAdd();
+                p.HasOne(p => p.Asset)
+                    .WithOne(a => a.Position)
+                    .HasForeignKey<Position>(p => p.AssetId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
-      modelBuilder.Entity<Transaction>()
-        .HasMany(t => t.StockOperations)
-        .WithOne(op => op.Transaction!)
-        .HasForeignKey(op => op.TransactionId)
-        .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Trade>(t =>
+            {
+                t.HasMany(t => t.Transactions)
+                    .WithOne(tr => tr.Trade)
+                    .HasForeignKey(tr => tr.TradeId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                t.HasIndex(t => t.Date);
+            });
+
+            modelBuilder.Entity<Transaction>(tr =>
+            {
+                tr.HasOne(t => t.Asset)
+                    .WithMany(a => a.Transactions)
+                    .HasForeignKey(t => t.AssetId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Dividend>(a =>
+            {
+                a.HasKey(x => x.Id);
+
+                a.HasIndex(a => a.AssetId);
+            });
+        }
     }
-  }
 }

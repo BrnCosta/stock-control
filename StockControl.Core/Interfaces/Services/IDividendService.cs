@@ -13,7 +13,6 @@ namespace StockControl.Core.Interfaces.Services
   {
     List<Dividend> GetAll();
     List<DividendGroupByMonthResponse> GetGroupByMonth();
-    public List<DividendGroupBySymbolResponse> GetGroupBySymbol();
-    void CreateNewDividend(string stockSymbol, double value, DateOnly date);
+    List<DividendGroupByTickerResponse> GetGroupByTicker();
   }
 }
