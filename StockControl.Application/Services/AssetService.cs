@@ -17,17 +17,17 @@ namespace StockControl.Application.Services
             return _unitOfWork.AssetRepository.GetLatestUpdate();
         }
 
-        public Asset GetOrCreateNewAsset(string ticker)
+        public Asset GetOrCreateNewAsset(string ticker, Currency currency)
         {
             Asset? asset = _unitOfWork.AssetRepository.GetAsync(ticker).GetAwaiter().GetResult();
 
             if (asset is null)
-                return CreateNewAsset(ticker);
+                return CreateNewAsset(ticker, currency);
 
             return asset;
         }
 
-        private Asset CreateNewAsset(string ticker)
+        private Asset CreateNewAsset(string ticker, Currency currency)
         {
             AssetInformationResponse stockInformation = _assetInformationService.GetAssetInformationResultAsync(ticker).GetAwaiter().GetResult();
 
@@ -37,6 +37,7 @@ namespace StockControl.Application.Services
                 Price = stockInformation.RegularMarketPrice,
                 Type = stockInformation.Type,
                 LastUpdate = DateTime.Now,
+                Currency = currency
             };
 
             _unitOfWork.AssetRepository.Create(asset);

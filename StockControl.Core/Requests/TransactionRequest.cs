@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace StockControl.Core.Requests
 {
-  public class TransactionRequest
-  {
-    public required string Ticker { get; set; }
-    public required int Quantity { get; set; }
-    public required decimal Price { get; set; }
-    public required OperationType OperatingType { get; set; }
-  }
+    public class TransactionRequest
+    {
+        public required string Ticker { get; set; }
+        public required int Quantity { get; set; }
+        public required decimal Price { get; set; }
+        public required OperationType OperatingType { get; set; }
+    }
 }

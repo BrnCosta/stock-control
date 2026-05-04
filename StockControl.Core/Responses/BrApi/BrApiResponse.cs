@@ -1,9 +1,14 @@
-﻿namespace StockControl.Core.Responses.BrApi
+﻿using System.Text.Json.Serialization;
+
+namespace StockControl.Core.Responses.BrApi
 {
     public class BrApiResponse
     {
-        public required List<BrApiMarketResultInformation> Results { get; set; }
-        public required List<BrApiMarketStockInformation> Stocks { get; set; }
+        [JsonPropertyName("results")]
+        public List<BrApiMarketResultInformation> Results { get; set; }
+
+        [JsonPropertyName("stocks")]
+        public List<BrApiMarketStockInformation> Stocks { get; set; }
     }
 
     public class BrApiMarketResultInformation

@@ -18,8 +18,9 @@ namespace StockControl.API.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Ticker = table.Column<string>(type: "TEXT", nullable: false),
                     Price = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Type = table.Column<int>(type: "INTEGER", nullable: false),
-                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Type = table.Column<string>(type: "TEXT", nullable: false),
+                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Currency = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,7 +33,8 @@ namespace StockControl.API.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Tax = table.Column<decimal>(type: "TEXT", nullable: true),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Currency = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,7 +87,7 @@ namespace StockControl.API.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Quantity = table.Column<int>(type: "INTEGER", nullable: false),
                     Price = table.Column<decimal>(type: "TEXT", nullable: false),
-                    OperatingType = table.Column<int>(type: "INTEGER", nullable: false),
+                    OperatingType = table.Column<string>(type: "TEXT", nullable: false),
                     AssetId = table.Column<Guid>(type: "TEXT", nullable: false),
                     TradeId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },

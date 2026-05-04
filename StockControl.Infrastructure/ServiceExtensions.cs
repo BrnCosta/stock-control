@@ -33,7 +33,7 @@ namespace StockControl.Infrastructure
 
             // Services
             services.AddScoped<IAssetService, AssetService>();
-            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<ITradeService, TradeService>();
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IDividendService, DividendService>();
             services.AddScoped<ITransactionService, TransactionService>();

@@ -23,7 +23,74 @@ namespace StockControl.UnitTest.Services
             {
                 Tax = 10,
                 Date = DateTime.Now,
-                Transactions = []
+                Transactions = [],
+                Currency = "CAD"
+            };
+
+            var tradeService = new TradeService(_unitOfWorkMock.Object, _positionServiceMock.Object, _assetServiceMock.Object, _transactionServiceMock.Object);
+
+            Assert.ThrowsAsync<ArgumentException>(() => tradeService.CreateNewTrade(tradeRequest));
+        }
+
+        [TestMethod]
+        public void Test_CreateNewTrade_WithEmptyTicker_ShouldThrowArgumentException()
+        {
+            var tradeRequest = new TradeRequest
+            {
+                Tax = 10,
+                Date = DateTime.Now,
+                Currency = "CAD",
+                Transactions = [new TransactionRequest
+                {
+                    Ticker = "",
+                    Quantity = 100,
+                    Price = 50,
+                    OperatingType = OperationType.Buy
+                }]
+            };
+
+            var tradeService = new TradeService(_unitOfWorkMock.Object, _positionServiceMock.Object, _assetServiceMock.Object, _transactionServiceMock.Object);
+
+            Assert.ThrowsAsync<ArgumentException>(() => tradeService.CreateNewTrade(tradeRequest));
+        }
+
+        [TestMethod]
+        public void Test_CreateNewTrade_WithEmptyCurrency_ShouldThrowArgumentException()
+        {
+            var tradeRequest = new TradeRequest
+            {
+                Tax = 10,
+                Date = DateTime.Now,
+                Currency = "",
+                Transactions = [new TransactionRequest
+                {
+                    Ticker = "AAPL",
+                    Quantity = 100,
+                    Price = 50,
+                    OperatingType = OperationType.Buy
+                }]
+            };
+
+            var tradeService = new TradeService(_unitOfWorkMock.Object, _positionServiceMock.Object, _assetServiceMock.Object, _transactionServiceMock.Object);
+
+            Assert.ThrowsAsync<ArgumentException>(() => tradeService.CreateNewTrade(tradeRequest));
+        }
+
+        [TestMethod]
+        public void Test_CreateNewTrade_WithInvalidCurrency_ShouldThrowArgumentException()
+        {
+            var tradeRequest = new TradeRequest
+            {
+                Tax = 10,
+                Date = DateTime.Now,
+                Currency = "EUR",
+                Transactions = [new TransactionRequest
+                {
+                    Ticker = "AAPL",
+                    Quantity = 100,
+                    Price = 50,
+                    OperatingType = OperationType.Buy
+                }]
             };
 
             var tradeService = new TradeService(_unitOfWorkMock.Object, _positionServiceMock.Object, _assetServiceMock.Object, _transactionServiceMock.Object);
@@ -42,6 +109,7 @@ namespace StockControl.UnitTest.Services
             {
                 Tax = 10,
                 Date = DateTime.Now,
+                Currency = "CAD",
                 Transactions = [new TransactionRequest
                 {
                     Ticker = "AAPL",

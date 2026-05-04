@@ -4,6 +4,7 @@
     {
         public required DateTime Date { get; set; }
         public required decimal Tax { get; set; }
+        public required string Currency { get; set; }
         public required ICollection<TransactionRequest> Transactions { get; set; }
     }
 }

@@ -11,7 +11,7 @@ using StockControl.Infrastructure.Context;
 namespace StockControl.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260501041825_InitialMigration")]
+    [Migration("20260504021408_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -26,6 +26,10 @@ namespace StockControl.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("LastUpdate")
                         .HasColumnType("TEXT");
 
@@ -36,8 +40,9 @@ namespace StockControl.API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -91,6 +96,10 @@ namespace StockControl.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
@@ -113,8 +122,9 @@ namespace StockControl.API.Migrations
                     b.Property<Guid>("AssetId")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("OperatingType")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("OperatingType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");

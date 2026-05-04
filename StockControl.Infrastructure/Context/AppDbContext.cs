@@ -15,15 +15,21 @@ namespace StockControl.Infrastructure.Context
         {
             modelBuilder.Entity<Asset>(a =>
             {
-                a.HasKey(x => x.Id);
+                a.HasKey(a => a.Id);
 
                 a.HasIndex(a => a.Ticker)
                     .IsUnique();
+
+                a.Property(a => a.Currency)
+                    .HasConversion<string>();
+
+                a.Property(a => a.Type)
+                    .HasConversion<string>();
             });
 
             modelBuilder.Entity<Position>(p =>
             {
-                p.HasKey(x => x.AssetId);
+                p.HasKey(p => p.AssetId);
 
                 p.HasOne(p => p.Asset)
                     .WithOne(a => a.Position)
@@ -39,6 +45,9 @@ namespace StockControl.Infrastructure.Context
                     .OnDelete(DeleteBehavior.Cascade);
 
                 t.HasIndex(t => t.Date);
+
+                t.Property(t => t.Currency)
+                    .HasConversion<string>();
             });
 
             modelBuilder.Entity<Transaction>(tr =>
@@ -47,13 +56,16 @@ namespace StockControl.Infrastructure.Context
                     .WithMany(a => a.Transactions)
                     .HasForeignKey(t => t.AssetId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                tr.Property(tr => tr.OperatingType)
+                    .HasConversion<string>();
             });
 
-            modelBuilder.Entity<Dividend>(a =>
+            modelBuilder.Entity<Dividend>(d =>
             {
-                a.HasKey(x => x.Id);
+                d.HasKey(d => d.Id);
 
-                a.HasIndex(a => a.AssetId);
+                d.HasIndex(d => d.AssetId);
             });
         }
     }

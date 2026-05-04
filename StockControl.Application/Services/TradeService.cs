@@ -1,4 +1,5 @@
 ﻿using StockControl.Core.Entities;
+using StockControl.Core.Enums;
 using StockControl.Core.Interfaces;
 using StockControl.Core.Interfaces.Services;
 using StockControl.Core.Requests;
@@ -17,16 +18,22 @@ namespace StockControl.Application.Services
             if(tradeRequest.Transactions == null || tradeRequest.Transactions.Count == 0)
                 throw new ArgumentException("Trade must have at least one transaction.");
 
+            var validCurrency = ValidateTradeCurrency(tradeRequest.Currency);
+
             var trade = new Trade
             {
                 Id = Guid.NewGuid(),
                 Tax = tradeRequest.Tax,
                 Date = tradeRequest.Date,
+                Currency = validCurrency
             };
 
             foreach (var transactionRequest in tradeRequest.Transactions)
             {
-                var asset = _assetService.GetOrCreateNewAsset(transactionRequest.Ticker);
+                if(string.IsNullOrEmpty(transactionRequest.Ticker))
+                    throw new ArgumentException("Transaction must have a ticker.");
+
+                var asset = _assetService.GetOrCreateNewAsset(transactionRequest.Ticker, validCurrency);
 
                 var transaction = _transactionService.CreateNewTransaction(transactionRequest, asset, trade);
 
@@ -39,6 +46,17 @@ namespace StockControl.Application.Services
             await _unitOfWork.Commit();
 
             return trade.Id;
+        }
+
+        private static Currency ValidateTradeCurrency(string currencyRequested)
+        {
+            if (string.IsNullOrEmpty(currencyRequested))
+                throw new ArgumentException("Trade must have a currency.");
+
+            if(!Enum.TryParse<Currency>(currencyRequested, out var validCurrency))
+                throw new ArgumentException("Trade must have a valid currency.");
+
+            return validCurrency;
         }
     }
 }

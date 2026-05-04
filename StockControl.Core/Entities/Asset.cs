@@ -1,5 +1,4 @@
 ﻿using StockControl.Core.Enums;
-using System.Text.Json.Serialization;
 
 namespace StockControl.Core.Entities
 {
@@ -10,6 +9,7 @@ namespace StockControl.Core.Entities
         public decimal Price { get; set; }
         public AssetType Type { get; set; }
         public DateTime LastUpdate { get; set; }
+        public Currency Currency { get; set; }
 
         public ICollection<Transaction> Transactions { get; } = [];
         public ICollection<Dividend> Dividends { get; } = [];
