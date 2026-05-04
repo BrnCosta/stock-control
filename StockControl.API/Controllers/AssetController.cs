@@ -8,9 +8,8 @@ namespace StockControl.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AssetController(IPositionService holderService, IAssetService stockService) : ControllerBase
+    public class AssetController(IAssetService stockService) : ControllerBase
     {
-        private readonly IPositionService _positionService = holderService;
         private readonly IAssetService _assetService = stockService;
 
         [HttpGet("latest-update")]

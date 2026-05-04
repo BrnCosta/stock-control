@@ -2,6 +2,8 @@
 using StockControl.Core.Enums;
 using StockControl.Core.Interfaces;
 using StockControl.Core.Interfaces.Services;
+using StockControl.Core.Responses;
+using System.Timers;
 
 namespace StockControl.Application.Services
 {
@@ -9,12 +11,26 @@ namespace StockControl.Application.Services
     {
         protected readonly IUnitOfWork _unitOfWork = unitOfWork;
 
+        public IEnumerable<PositionOverviewResponse> GetAllCurrentPosition()
+        {
+            var currentPositions = _unitOfWork.PositionRepository.GetAll();
+            var positionOverviewList = new List<PositionOverviewResponse>();
+
+            foreach (var position in currentPositions)
+            {
+                var overview = GeneratePositionOverview(position);
+                positionOverviewList.Add(overview);
+            }
+
+            return positionOverviewList;
+        }
+
         public Position CreateOrUpdatePosition(Asset asset, Transaction transaction)
         {
             var position = _unitOfWork.PositionRepository.GetPositionByAssetTicket(asset.Ticker).GetAwaiter().GetResult();
 
             if (position is null)
-               return CreateAssetPosition(asset, transaction.Quantity, transaction.Price);
+                return CreateAssetPosition(asset, transaction.Quantity, transaction.Price);
 
             return UpdateAssetPosition(position, transaction);
         }
@@ -23,10 +39,10 @@ namespace StockControl.Application.Services
         {
             try
             {
-                if(transaction.OperatingType == OperationType.Buy)
+                if (transaction.OperatingType == OperationType.Buy)
                     return UpdateBuyStockHolder(transaction.Quantity, transaction.Price, position);
 
-                if(transaction.OperatingType == OperationType.Sell)
+                if (transaction.OperatingType == OperationType.Sell)
                     return UpdateSellStockHolder(transaction.Quantity, position);
 
                 throw new ArgumentException($"Invalid operation type: {transaction.OperatingType}");
@@ -94,6 +110,22 @@ namespace StockControl.Application.Services
             {
                 throw new Exception($"Failed to create a new position for asset {asset.Ticker}: {ex.Message}", ex);
             }
+        }
+
+        private static PositionOverviewResponse GeneratePositionOverview(Position position)
+        {
+            return new PositionOverviewResponse
+            {
+                Ticker = position.Asset.Ticker,
+                AveragePrice = position.AveragePrice,
+                Quantity = position.Quantity,
+                TotalInvested = position.AveragePrice * position.Quantity,
+                CurrentPrice = position.Asset.Price,
+                CurrentInvested = position.Asset.Price * position.Quantity,
+                CurrentGain = (position.Asset.Price * position.Quantity) - (position.AveragePrice * position.Quantity),
+                GainPercentage = ((position.Asset.Price * position.Quantity) - (position.AveragePrice * position.Quantity)) / (position.AveragePrice * position.Quantity) * 100,
+                AssetType = position.Asset.Type.ToString()
+            };
         }
 
         private static decimal CalculateAveragePrice(Position stockHolder, decimal buyPrice, int buyQuantity)
