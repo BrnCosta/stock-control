@@ -1,6 +1,6 @@
 ﻿namespace StockControl.Core.Responses
 {
-  public class PositionOverviewResponse
+  public class PositionAssetOverviewResponse
   {
     public required string Ticker { get; set; }
     public required decimal AveragePrice { get; set; }

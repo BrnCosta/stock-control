@@ -12,7 +12,13 @@ namespace StockControl.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCurrentPosition()
         {
-            return Ok(_positionService.GetAllCurrentPosition());
+            return Ok(_positionService.GetAllAssetCurrentPosition());
+        }
+
+        [HttpGet("balance")]
+        public async Task<IActionResult> GetBalance()
+        {
+            return Ok(_positionService.GetBalanceOverall());
         }
     }
 }

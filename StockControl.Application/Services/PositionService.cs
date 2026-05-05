@@ -3,7 +3,6 @@ using StockControl.Core.Enums;
 using StockControl.Core.Interfaces;
 using StockControl.Core.Interfaces.Services;
 using StockControl.Core.Responses;
-using System.Timers;
 
 namespace StockControl.Application.Services
 {
@@ -11,10 +10,10 @@ namespace StockControl.Application.Services
     {
         protected readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public IEnumerable<PositionOverviewResponse> GetAllCurrentPosition()
+        public IEnumerable<PositionAssetOverviewResponse> GetAllAssetCurrentPosition()
         {
             var currentPositions = _unitOfWork.PositionRepository.GetAll();
-            var positionOverviewList = new List<PositionOverviewResponse>();
+            var positionOverviewList = new List<PositionAssetOverviewResponse>();
 
             foreach (var position in currentPositions)
             {
@@ -23,6 +22,12 @@ namespace StockControl.Application.Services
             }
 
             return positionOverviewList;
+        }
+
+        public PositionBalance GetBalanceOverall()
+        {
+            var currentPositions = _unitOfWork.PositionRepository.GetAll();
+            return GeneratePositionBalance(currentPositions);
         }
 
         public Position CreateOrUpdatePosition(Asset asset, Transaction transaction)
@@ -112,9 +117,26 @@ namespace StockControl.Application.Services
             }
         }
 
-        private static PositionOverviewResponse GeneratePositionOverview(Position position)
+        private static PositionBalance GeneratePositionBalance(IEnumerable<Position> positions)
         {
-            return new PositionOverviewResponse
+            var balance = new PositionBalance();
+
+            foreach (var position in positions)
+            {
+                var overview = GeneratePositionOverview(position);
+                balance.TotalInvested += overview.TotalInvested;
+                balance.CurrentInvested += overview.CurrentInvested;
+            }
+
+            balance.TotalGain = balance.CurrentInvested - balance.TotalInvested;
+            balance.GainPercentage = balance.TotalInvested != 0 ? (balance.TotalGain / balance.TotalInvested) * 100 : 0;
+
+            return balance;
+        }
+
+        private static PositionAssetOverviewResponse GeneratePositionOverview(Position position)
+        {
+            return new PositionAssetOverviewResponse
             {
                 Ticker = position.Asset.Ticker,
                 AveragePrice = position.AveragePrice,
