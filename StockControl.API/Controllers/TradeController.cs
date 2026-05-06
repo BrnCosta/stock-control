@@ -10,6 +10,13 @@ namespace StockControl.API.Controllers
     {
         private readonly ITradeService _tradeService = tradeService;
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrades()
+        {
+            var trades = await _tradeService.GetAllTrades();
+            return Ok(trades);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateNewTrade([FromBody] TradeRequest tradeRequest)
         {

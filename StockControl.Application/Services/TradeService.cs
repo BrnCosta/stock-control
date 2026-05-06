@@ -3,6 +3,8 @@ using StockControl.Core.Enums;
 using StockControl.Core.Interfaces;
 using StockControl.Core.Interfaces.Services;
 using StockControl.Core.Requests;
+using StockControl.Core.Responses;
+using System.Diagnostics;
 
 namespace StockControl.Application.Services
 {
@@ -12,6 +14,13 @@ namespace StockControl.Application.Services
         private readonly IPositionService _positionService = positionService;
         private readonly IAssetService _assetService = assetService;
         private readonly ITransactionService _transactionService = transactionService;
+
+        public async Task<List<TradeOverviewResponse>> GetAllTrades()
+        {
+            var allTrades = _unitOfWork.TradeRepository.GetAll();
+
+            return GenerateTradesOverview(allTrades);
+        }
 
         public async Task<Guid> CreateNewTrade(TradeRequest tradeRequest)
         {
@@ -46,6 +55,46 @@ namespace StockControl.Application.Services
             await _unitOfWork.Commit();
 
             return trade.Id;
+        }
+
+        private static List<TradeOverviewResponse> GenerateTradesOverview(IEnumerable<Trade> trades)
+        {
+            var allTradesOverview = new List<TradeOverviewResponse>();
+
+            foreach (var trade in trades)
+            {
+                var tradeOverview = new TradeOverviewResponse
+                {
+                    Currency = trade.Currency.ToString(),
+                    Date = trade.Date,
+                    Tax = trade.Tax ?? 0,
+                    Transactions = GenerateTransactionsOverview(trade.Transactions)
+                };
+
+                allTradesOverview.Add(tradeOverview);
+            }
+
+            return allTradesOverview;
+        }
+
+        private static List<TransactionOverviewResponse> GenerateTransactionsOverview(IEnumerable<Transaction> transactions)
+        {
+            var allTransactionsOverview = new List<TransactionOverviewResponse>();
+
+            foreach (var transaction in transactions)
+            {
+                var transactionOverview = new TransactionOverviewResponse
+                {
+                    AssetTicker = transaction.Asset.Ticker,
+                    OperationType = transaction.OperatingType.ToString(),
+                    Price = transaction.Price,
+                    Quantity = transaction.Quantity
+                };
+
+                allTransactionsOverview.Add(transactionOverview);
+            }
+
+            return allTransactionsOverview;
         }
 
         private static Currency ValidateTradeCurrency(string currencyRequested)
