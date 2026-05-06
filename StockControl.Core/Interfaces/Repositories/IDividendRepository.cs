@@ -3,9 +3,5 @@ using StockControl.Core.Responses;
 
 namespace StockControl.Core.Interfaces.Repositories
 {
-  public interface IDividendRepository : IBaseRepository<Dividend>
-  {
-    IEnumerable<DividendGroupByMonthResponse> GetDividendsGroupedByMonth();
-    IEnumerable<DividendGroupByTickerResponse> GetDividendsGroupedBySymbol();
-  }
+  public interface IDividendRepository : IBaseRepository<Dividend> { }
 }

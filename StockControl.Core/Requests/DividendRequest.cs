@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace StockControl.Core.Requests
 {
-  public class DividendRequest
-  {
-    public required string StockSymbol { get; set; }
-    public required decimal Value { get; set; }
-    public required DateTime Date { get; set; }
-  }
+    public class DividendRequest
+    {
+        public required string Ticker { get; set; }
+        public required decimal Value { get; set; }
+        public required DateTime Date { get; set; }
+    }
 }

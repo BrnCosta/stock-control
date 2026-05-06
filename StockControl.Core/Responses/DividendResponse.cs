@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace StockControl.Core.Responses
 {
-  public class DividendGroupByMonthResponse
-  {
-    public int Year { get; set; }
-    public int Month { get; set; }
-    public decimal TotalValue { get; set; }
-  }
+    public class DividendGroupByMonthResponse
+    {
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public decimal TotalValue { get; set; }
+    }
 
-  public class DividendGroupByTickerResponse : DividendGroupByMonthResponse
-  {
-    public required string Asset { get; set; }
-  }
+    public class DividendGroupByTickerResponse : DividendGroupByMonthResponse
+    {
+        public required string Asset { get; set; }
+    }
 }

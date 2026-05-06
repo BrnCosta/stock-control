@@ -42,7 +42,7 @@ namespace StockControl.Application.Services
                 if(string.IsNullOrEmpty(transactionRequest.Ticker))
                     throw new ArgumentException("Transaction must have a ticker.");
 
-                var asset = _assetService.GetOrCreateNewAsset(transactionRequest.Ticker, validCurrency);
+                var asset = await _assetService.GetOrCreateNewAsset(transactionRequest.Ticker, validCurrency);
 
                 var transaction = _transactionService.CreateNewTransaction(transactionRequest, asset, trade);
 

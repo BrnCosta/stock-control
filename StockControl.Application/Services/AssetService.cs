@@ -17,19 +17,24 @@ namespace StockControl.Application.Services
             return _unitOfWork.AssetRepository.GetLatestUpdate();
         }
 
-        public Asset GetOrCreateNewAsset(string ticker, Currency currency)
+        public async Task<Asset?> GetAssetByTicker(string ticker)
         {
-            Asset? asset = _unitOfWork.AssetRepository.GetAsync(ticker).GetAwaiter().GetResult();
+            return await _unitOfWork.AssetRepository.GetAsync(ticker);
+        }
+
+        public async Task<Asset> GetOrCreateNewAsset(string ticker, Currency currency)
+        {
+            Asset? asset = await _unitOfWork.AssetRepository.GetAsync(ticker);
 
             if (asset is null)
-                return CreateNewAsset(ticker, currency);
+                return await CreateNewAsset(ticker, currency);
 
             return asset;
         }
 
-        private Asset CreateNewAsset(string ticker, Currency currency)
+        private async Task<Asset> CreateNewAsset(string ticker, Currency currency)
         {
-            AssetInformationResponse stockInformation = _assetInformationService.GetAssetInformationResultAsync(ticker).GetAwaiter().GetResult();
+            AssetInformationResponse stockInformation = await _assetInformationService.GetAssetInformationResultAsync(ticker);
 
             var asset = new Asset
             {

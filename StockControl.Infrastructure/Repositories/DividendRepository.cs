@@ -6,38 +6,13 @@ using StockControl.Infrastructure.Context;
 
 namespace StockControl.Infrastructure.Repositories
 {
-  public class DividendRepository(AppDbContext context) : BaseRepository<Dividend>(context), IDividendRepository
-  {
-    public IEnumerable<DividendGroupByMonthResponse> GetDividendsGroupedByMonth()
+    public class DividendRepository(AppDbContext context) : BaseRepository<Dividend>(context), IDividendRepository 
     {
-      return _context.Dividends
-        .AsNoTracking()
-        .GroupBy(d => new { d.Date.Year, d.Date.Month })
-        .Select(g => new DividendGroupByMonthResponse
+        public new IEnumerable<Dividend> GetAll()
         {
-          Year = g.Key.Year,
-          Month = g.Key.Month,
-          TotalValue = g.Sum(d => d.Value)
-        })
-        .OrderBy(summary => summary.Year)
-        .ThenBy(summary => summary.Month);
+            return _context.Dividends
+                .Include(d => d.Asset)
+                .AsNoTracking();
+        }
     }
-
-    public IEnumerable<DividendGroupByTickerResponse> GetDividendsGroupedBySymbol()
-    {
-      return _context.Dividends
-        .AsNoTracking()
-        .GroupBy(d => new { d.Asset.Ticker, d.Date.Year, d.Date.Month })
-        .Select(g => new DividendGroupByTickerResponse
-        {
-          Year = g.Key.Year,
-          Month = g.Key.Month,
-          TotalValue = g.Sum(d => d.Value),
-          Asset = g.Key.Ticker
-        })
-        .OrderBy(summary => summary.Year)
-        .ThenBy(summary => summary.Month)
-        .ThenBy(summary => summary.Asset);
-    }
-  }
 }

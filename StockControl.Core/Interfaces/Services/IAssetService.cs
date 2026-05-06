@@ -5,7 +5,8 @@ namespace StockControl.Core.Interfaces.Services
 {
     public interface IAssetService
     {
-        Asset GetOrCreateNewAsset(string ticker, Currency currency);
+        Task<Asset?> GetAssetByTicker(string ticker);
+        Task<Asset> GetOrCreateNewAsset(string ticker, Currency currency);
         DateTime GetLatestUpdate();
     }
 }

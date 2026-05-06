@@ -1,32 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StockControl.Core.Entities;
 using StockControl.Core.Interfaces.Services;
+using StockControl.Core.Requests;
 using StockControl.Core.Responses;
 
 namespace StockControl.API.Controllers
 {
-  [ApiController]
-  [Route("[controller]")]
-  public class DividendController(IDividendService dividendService) : ControllerBase
-  {
-    private readonly IDividendService _dividendService = dividendService;
-
-    [HttpGet]
-    public List<Dividend> GetAll()
+    [ApiController]
+    [Route("[controller]")]
+    public class DividendController(IDividendService dividendService) : ControllerBase
     {
-      return _dividendService.GetAll();
-    }
+        private readonly IDividendService _dividendService = dividendService;
 
-    [HttpGet("by-month")]
-    public List<DividendGroupByMonthResponse> GetGroupByMonth()
-    {
-      return _dividendService.GetGroupByMonth();
-    }
+        [HttpPost]
+        public async Task<IActionResult> CreateNewDividend(DividendRequest dividendRequest)
+        {
+            var dividendId = await _dividendService.CreateAsync(dividendRequest);
+            return CreatedAtAction(nameof(CreateNewDividend), new { id = dividendId }, dividendId);
+        }
 
-    [HttpGet("by-symbol")]
-    public List<DividendGroupByTickerResponse> GetGroupBySymbol()
-    {
-      return _dividendService.GetGroupByTicker();
+        [HttpGet("by-month")]
+        public List<DividendGroupByMonthResponse> GetGroupByMonth()
+        {
+            return _dividendService.GetGroupByMonth();
+        }
+
+        [HttpGet("by-symbol")]
+        public List<DividendGroupByTickerResponse> GetGroupBySymbol()
+        {
+            return _dividendService.GetGroupByTicker();
+        }
     }
-  }
 }
