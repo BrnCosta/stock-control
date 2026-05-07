@@ -38,7 +38,7 @@ namespace StockControl.Application.Services.External
 
             return brApiType switch
             {
-                "stock" => AssetType.Stock,
+                "stock" => AssetType.STOCK,
                 "fund" => AssetType.REIT,
                 _ => throw new Exception("Unknown asset type.")
             };

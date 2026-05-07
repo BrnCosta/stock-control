@@ -1,5 +1,5 @@
 ﻿using StockControl.Core.Entities;
-using StockControl.Core.Responses;
+using StockControl.Core.Responses.Position;
 
 namespace StockControl.Core.Interfaces.Repositories
 {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StockControl.Core.Responses
+namespace StockControl.Core.Responses.Position
 {
-    public class PositionBalance
+    public class PositionBalanceResponse
     {
         public decimal TotalInvested { get; set; }
         public decimal CurrentInvested { get; set; }

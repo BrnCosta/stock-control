@@ -1,4 +1,4 @@
-﻿namespace StockControl.Core.Responses
+﻿namespace StockControl.Core.Responses.Position
 {
   public class PositionAssetOverviewResponse
   {

@@ -2,7 +2,7 @@
 using StockControl.Core.Enums;
 using StockControl.Core.Interfaces;
 using StockControl.Core.Interfaces.Services;
-using StockControl.Core.Responses;
+using StockControl.Core.Responses.Position;
 
 namespace StockControl.Application.Services
 {
@@ -24,7 +24,24 @@ namespace StockControl.Application.Services
             return positionOverviewList;
         }
 
-        public PositionBalance GetBalanceOverall()
+        public async Task<PositionWalletOverviewResponse> GetOverview()
+        {
+            var groupedByType = _unitOfWork.PositionRepository.GetAll()
+                .GroupBy(x => x.Asset.Type)
+                .Select(x => new AssetTypeOverviewResponse
+                {
+                    AssetType = x.FirstOrDefault()!.Asset.Type.ToString(),
+                    Value = x.Sum(p => p.Quantity * p.AveragePrice),
+                });
+
+            return new PositionWalletOverviewResponse
+            {
+                AssetTypes = groupedByType,
+                TotalValue = groupedByType.Sum(g => g.Value)
+            };
+        }
+
+        public PositionBalanceResponse GetBalanceOverall()
         {
             var currentPositions = _unitOfWork.PositionRepository.GetAll();
             return GeneratePositionBalance(currentPositions);
@@ -117,9 +134,9 @@ namespace StockControl.Application.Services
             }
         }
 
-        private static PositionBalance GeneratePositionBalance(IEnumerable<Position> positions)
+        private static PositionBalanceResponse GeneratePositionBalance(IEnumerable<Position> positions)
         {
-            var balance = new PositionBalance();
+            var balance = new PositionBalanceResponse();
 
             foreach (var position in positions)
             {
