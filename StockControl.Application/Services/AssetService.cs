@@ -32,6 +32,25 @@ namespace StockControl.Application.Services
             return asset;
         }
 
+        public async Task<DateTime> UpdateAssetPrice()
+        {
+            IEnumerable<Asset> assets = _unitOfWork.AssetRepository.GetAll();
+
+            var updateTime = DateTime.UtcNow;
+
+            foreach (var asset in assets)
+            {
+                decimal currentPrice = await _assetInformationService.GetAssetMarketPrice(asset.Ticker);
+                asset.Price = currentPrice;
+                asset.LastUpdate = updateTime;
+                _unitOfWork.AssetRepository.Update(asset);
+            }
+
+            await _unitOfWork.Commit();
+
+            return updateTime;
+        }
+
         private async Task<Asset> CreateNewAsset(string ticker, Currency currency)
         {
             AssetInformationResponse stockInformation = await _assetInformationService.GetAssetInformationResultAsync(ticker);

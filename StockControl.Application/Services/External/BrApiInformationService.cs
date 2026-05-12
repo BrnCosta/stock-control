@@ -46,11 +46,18 @@ namespace StockControl.Application.Services.External
 
         public async Task<decimal> GetAssetMarketPrice(string ticker)
         {
-            string apiUrl = string.Concat(BRAPI_QUOTE_URL, ticker, BRAPI_INTERVAL_PARAMS);
+            try
+            {
+                string apiUrl = string.Concat(BRAPI_QUOTE_URL, ticker, BRAPI_INTERVAL_PARAMS);
 
-            var jsonResponse = await ApiGetAsync<BrApiResponse>(apiUrl);
+                var jsonResponse = await ApiGetAsync<BrApiResponse>(apiUrl);
 
-            return jsonResponse?.Results?.FirstOrDefault()?.RegularMarketPrice ?? throw new Exception("Cannot retrieve asset market price.");
+                return jsonResponse?.Results?.FirstOrDefault()?.RegularMarketPrice ?? throw new Exception($"Cannot retrieve market price for {ticker}.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving market price for {ticker}.", ex);
+            }
         }
 
         private async Task<T?> ApiGetAsync<T>(string apiUrl)

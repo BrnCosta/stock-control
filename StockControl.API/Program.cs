@@ -24,13 +24,13 @@ var frontendCorsPolicy = "_frontendOrigin";
 
 builder.Services.AddCors(options =>
 {
-  options.AddPolicy(name: frontendCorsPolicy,
-    policy =>
-    {
-      policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
-        .AllowAnyMethod()
-        .AllowAnyHeader();
-    });
+    options.AddPolicy(name: frontendCorsPolicy,
+      policy =>
+      {
+          policy.WithOrigins("http://localhost:4200", "http://127.0.0.1:4200")
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+      });
 });
 
 var app = builder.Build();
@@ -41,13 +41,13 @@ builder.Logging.AddConsole();
 if (app.Environment.IsDevelopment())
 {
 
-  // Load Environment Variables from .env file
-  DotEnv.Load();
+    // Load Environment Variables from .env file
+    DotEnv.Load();
 
-  app.UseSwagger();
-  app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
-  app.UseCors(frontendCorsPolicy);
+    app.UseCors(frontendCorsPolicy);
 }
 
 app.UseHttpsRedirection();

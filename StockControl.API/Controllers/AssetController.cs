@@ -8,14 +8,28 @@ namespace StockControl.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AssetController(IAssetService stockService) : ControllerBase
+    public class AssetController(IAssetService assetService) : ControllerBase
     {
-        private readonly IAssetService _assetService = stockService;
+        private readonly IAssetService _assetService = assetService;
 
         [HttpGet("latest-update")]
         public DateTime GetLatestUpdate()
         {
             return _assetService.GetLatestUpdate();
+        }
+
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateAsset()
+        {
+            try
+            {
+                DateTime updateTime = await _assetService.UpdateAssetPrice();
+                return Ok(updateTime);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while updating asset prices.", Details = ex.Message });
+            }
         }
     }
 }
