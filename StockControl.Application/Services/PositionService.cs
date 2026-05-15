@@ -31,7 +31,7 @@ namespace StockControl.Application.Services
                 .Select(x => new AssetTypeOverviewResponse
                 {
                     AssetType = x.FirstOrDefault()!.Asset.Type.ToString(),
-                    Value = x.Sum(p => p.Quantity * p.AveragePrice),
+                    Value = x.Sum(p => p.Quantity * p.Asset.Price),
                 });
 
             return new PositionWalletOverviewResponse
@@ -167,12 +167,12 @@ namespace StockControl.Application.Services
             };
         }
 
-        private static decimal CalculateAveragePrice(Position stockHolder, decimal buyPrice, int buyQuantity)
+        private static decimal CalculateAveragePrice(Position position, decimal buyPrice, int buyQuantity)
         {
             try
             {
-                decimal currentPrice = stockHolder.AveragePrice * stockHolder.Quantity;
-                int totalQuantity = buyQuantity + stockHolder.Quantity;
+                decimal currentPrice = position.AveragePrice * position.Quantity;
+                int totalQuantity = buyQuantity + position.Quantity;
 
                 decimal newAveragePrice = (currentPrice + (buyPrice * buyQuantity)) / totalQuantity;
 

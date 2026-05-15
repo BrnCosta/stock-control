@@ -8,6 +8,7 @@ namespace StockControl.Core.Responses
 {
     public class TradeOverviewResponse
     {
+        public Guid Id { get; set; }
         public decimal Tax { get; set; }
         public DateTime Date { get; set; }
         public string Currency { get; set; }

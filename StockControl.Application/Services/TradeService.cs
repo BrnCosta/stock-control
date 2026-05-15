@@ -65,6 +65,7 @@ namespace StockControl.Application.Services
             {
                 var tradeOverview = new TradeOverviewResponse
                 {
+                    Id = trade.Id,
                     Currency = trade.Currency.ToString(),
                     Date = trade.Date,
                     Tax = trade.Tax ?? 0,

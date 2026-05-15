@@ -14,7 +14,10 @@ namespace StockControl.Infrastructure.Repositories
 
         public new IEnumerable<Position> GetAll()
         {
-            return _context.Positions.Include(x => x.Asset).AsNoTracking();
+            return _context.Positions
+                .Include(x => x.Asset)
+                .Where(x => x.Quantity > 0)
+                .AsNoTracking();
         }
     }
 }

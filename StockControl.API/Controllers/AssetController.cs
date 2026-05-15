@@ -18,7 +18,7 @@ namespace StockControl.API.Controllers
             return _assetService.GetLatestUpdate();
         }
 
-        [HttpPost("update")]
+        [HttpGet("update")]
         public async Task<IActionResult> UpdateAsset()
         {
             try

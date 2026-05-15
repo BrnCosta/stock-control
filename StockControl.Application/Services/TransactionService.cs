@@ -1,4 +1,5 @@
 ﻿using StockControl.Core.Entities;
+using StockControl.Core.Enums;
 using StockControl.Core.Interfaces;
 using StockControl.Core.Interfaces.Services;
 using StockControl.Core.Requests;
@@ -13,12 +14,14 @@ namespace StockControl.Application.Services
 
         public Transaction CreateNewTransaction(TransactionRequest transactionRequest, Asset asset, Trade trade)
         {
+            var validOperationType = ValidateOperationType(transactionRequest.OperatingType);
+
             var transaction = new Transaction
             {
                 Id = Guid.NewGuid(),
                 Quantity = transactionRequest.Quantity,
                 Price = transactionRequest.Price,
-                OperatingType = transactionRequest.OperatingType,
+                OperatingType = validOperationType,
                 Asset = asset,
                 Trade = trade,
             };
@@ -26,6 +29,16 @@ namespace StockControl.Application.Services
             _unitOfWork.TransactionRepository.Create(transaction);
 
             return transaction;
+        }
+
+        private static OperationType ValidateOperationType(string operationType)
+        {
+            if (Enum.TryParse(operationType, out OperationType result))
+            {
+                return result;
+            }
+
+            throw new ArgumentException($"Invalid operation type: {operationType}");
         }
     }
 }
