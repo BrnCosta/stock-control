@@ -12,6 +12,19 @@ namespace StockControl.API.Controllers
     {
         private readonly IAssetService _assetService = assetService;
 
+        [HttpGet]
+        public async Task<IActionResult> GetRegisteredAssets()
+        {
+            try
+            {
+                return Ok(_assetService.GetRegisteredTickers());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while recovering all tickers.", Details = ex.Message });
+            }
+        }
+
         [HttpGet("latest-update")]
         public DateTime GetLatestUpdate()
         {

@@ -18,5 +18,12 @@ namespace StockControl.Infrastructure.Repositories
               .AsNoTracking()
               .Max(e => e.LastUpdate);
         }
+
+        public IEnumerable<string> GetRegisteredTickers()
+        {
+            return _context.Assets
+                .AsNoTracking()
+                .Select(x => x.Ticker);
+        }
     }
 }

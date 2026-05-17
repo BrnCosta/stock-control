@@ -9,5 +9,6 @@ namespace StockControl.Core.Interfaces.Services
         Task<Asset> GetOrCreateNewAsset(string ticker, Currency currency);
         DateTime GetLatestUpdate();
         Task<DateTime> UpdateAssetPrice();
+        IEnumerable<string> GetRegisteredTickers();
     }
 }

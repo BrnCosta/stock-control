@@ -17,6 +17,11 @@ namespace StockControl.Application.Services
             return _unitOfWork.AssetRepository.GetLatestUpdate();
         }
 
+        public IEnumerable<string> GetRegisteredTickers()
+        {
+            return _unitOfWork.AssetRepository.GetRegisteredTickers();
+        }
+
         public async Task<Asset?> GetAssetByTicker(string ticker)
         {
             return await _unitOfWork.AssetRepository.GetAsync(ticker);
@@ -36,7 +41,7 @@ namespace StockControl.Application.Services
         {
             IEnumerable<Asset> assets = _unitOfWork.AssetRepository.GetAll();
 
-            var updateTime = DateTime.UtcNow;
+            var updateTime = DateTime.Now;
 
             foreach (var asset in assets)
             {
