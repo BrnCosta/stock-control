@@ -29,13 +29,13 @@ jobs:
               run: dotnet --version
 
             - name: 'Build API application'
-              run: dotnet publish --configuration Release --output publish
+              run: dotnet publish StockControl.API/StockControl.API.csproj -c Release --output ./publish-api
             
             - name: 'Upload build artifacts'
               uses: actions/upload-artifact@v7
               with:
                 name: api-build
-                path: publish
+                path: publish-api
     
     deploy:
         needs: build_api
