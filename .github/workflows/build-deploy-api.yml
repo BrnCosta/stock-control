@@ -1,0 +1,74 @@
+name: 'Build API - CI/CD'
+
+env:
+  IIS_APPLICATION_PATH: 'C:\stock-control\api'
+  IIS_APP_POOL_NAME: 'stock-control-api'
+
+on:
+    workflow_dispatch:
+      inputs:
+        commit_sha:
+          description: 'Commit SHA to build (optional, defaults to latest commit on main)'
+          required: false
+          default: ''
+          type: string
+    push:
+        branches:
+        - main
+
+jobs:
+    build_api:
+        runs-on: self-hosted
+        steps:
+            - name: 'Checkout code'
+              uses: actions/checkout@v6
+              with:
+                ref: ${{ github.event.inputs.commit_sha || github.ref }}
+
+            - name: 'Check .NET version'
+              run: dotnet --version
+
+            - name: 'Build API application'
+              run: dotnet publish --configuration Release --output publish
+            
+            - name: 'Upload build artifacts'
+              uses: actions/upload-artifact@v7
+              with:
+                name: api-build
+                path: publish
+    
+    deploy:
+        needs: build_api
+        runs-on: self-hosted
+        steps:
+            - name: 'Download build artifacts'
+              uses: actions/download-artifact@v7
+              with:
+                name: api-build
+                path: api
+            
+            - name: Stop IIS Application Pool
+              run: |
+                Import-Module WebAdministration
+                Stop-WebAppPool -Name ${{ env.IIS_APP_POOL_NAME }}
+                Start-Sleep -Seconds 5
+              shell: powershell
+            
+            - name: Clean IIS Folder (Keeping web.config)
+              run: |                
+                if (Test-Path ${{ env.IIS_APPLICATION_PATH }}) {
+                  Get-ChildItem -Path ${{ env.IIS_APPLICATION_PATH }} -Recurse | 
+                    Where-Object { $_.Name -ne "web.config" } | 
+                      Remove-Item -Recurse -Force
+                }
+              shell: powershell
+
+            - name: Deploy to IIS
+              run: Copy-Item -Path "api/*" -Destination ${{ env.IIS_APPLICATION_PATH }} -Recurse -Force
+              shell: powershell
+
+            - name: Start IIS Application Pool
+              run: |
+                Import-Module WebAdministration
+                Start-WebAppPool -Name ${{ env.IIS_APP_POOL_NAME }}
+              shell: powershell
