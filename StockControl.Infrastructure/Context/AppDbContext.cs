@@ -35,6 +35,9 @@ namespace StockControl.Infrastructure.Context
                     .WithOne(a => a.Position)
                     .HasForeignKey<Position>(p => p.AssetId)
                     .OnDelete(DeleteBehavior.Restrict);
+                
+                p.Property(p => p.Quantity)
+                    .HasPrecision(18, 4);
             });
 
             modelBuilder.Entity<Trade>(t =>
@@ -59,6 +62,9 @@ namespace StockControl.Infrastructure.Context
 
                 tr.Property(tr => tr.OperatingType)
                     .HasConversion<string>();
+
+                tr.Property(tr => tr.Quantity)
+                    .HasPrecision(18, 4);
             });
 
             modelBuilder.Entity<Dividend>(d =>

@@ -40,7 +40,6 @@ builder.Logging.AddConsole();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-
     // Load Environment Variables from .env file
     DotEnv.Load();
 
@@ -49,6 +48,8 @@ if (app.Environment.IsDevelopment())
 
     app.UseCors(frontendCorsPolicy);
 }
+
+app.ApplyMigrations();
 
 app.UseHttpsRedirection();
 

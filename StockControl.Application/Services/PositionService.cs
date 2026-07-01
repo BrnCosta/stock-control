@@ -70,7 +70,7 @@ namespace StockControl.Application.Services
             }
         }
 
-        private Position UpdateBuyStockHolder(int buyQuantity, decimal buyPrice, Position position)
+        private Position UpdateBuyStockHolder(decimal buyQuantity, decimal buyPrice, Position position)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace StockControl.Application.Services
             }
         }
 
-        private Position UpdateSellStockHolder(int sellQuantity, Position position)
+        private Position UpdateSellStockHolder(decimal sellQuantity, Position position)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace StockControl.Application.Services
             }
         }
 
-        private Position CreateAssetPosition(Asset asset, int quantity, decimal price)
+        private Position CreateAssetPosition(Asset asset, decimal quantity, decimal price)
         {
             try
             {
@@ -179,12 +179,12 @@ namespace StockControl.Application.Services
             };
         }
 
-        private static decimal CalculateAveragePrice(Position position, decimal buyPrice, int buyQuantity)
+        private static decimal CalculateAveragePrice(Position position, decimal buyPrice, decimal buyQuantity)
         {
             try
             {
                 decimal currentPrice = position.AveragePrice * position.Quantity;
-                int totalQuantity = buyQuantity + position.Quantity;
+                decimal totalQuantity = buyQuantity + position.Quantity;
 
                 decimal newAveragePrice = (currentPrice + (buyPrice * buyQuantity)) / totalQuantity;
 

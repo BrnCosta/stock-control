@@ -7,7 +7,7 @@ namespace StockControl.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TransactionController(ITransactionService transactionService) : ControllerBase
+    public class TransactionController() : ControllerBase
     {
     }
 }

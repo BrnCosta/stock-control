@@ -6,7 +6,7 @@ namespace StockControl.Core.Entities
     public class Transaction
     {
         public Guid Id { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public decimal Price { get; set; }
         public OperationType OperatingType { get; set; }
 

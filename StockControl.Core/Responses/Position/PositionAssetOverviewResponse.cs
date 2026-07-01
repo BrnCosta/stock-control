@@ -4,7 +4,7 @@
   {
     public required string Ticker { get; set; }
     public required decimal AveragePrice { get; set; }
-    public required int Quantity { get; set; }
+    public required decimal Quantity { get; set; }
     public decimal TotalInvested { get; set; }
     public required decimal CurrentPrice { get; set; }
     public decimal CurrentInvested { get; set; }

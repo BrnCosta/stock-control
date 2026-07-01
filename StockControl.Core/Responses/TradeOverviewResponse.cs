@@ -18,7 +18,7 @@ namespace StockControl.Core.Responses
     public class TransactionOverviewResponse
     {
         public string AssetTicker { get; set; }
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public decimal Price { get; set; }
         public string OperationType { get; set; }
     }
