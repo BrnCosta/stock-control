@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StockControl.Application.Services;
 using StockControl.Application.Services.External;
+using StockControl.Core.Enums;
 using StockControl.Core.Interfaces;
 using StockControl.Core.Interfaces.Repositories;
 using StockControl.Core.Interfaces.Services;
@@ -39,7 +40,8 @@ namespace StockControl.Infrastructure
             services.AddScoped<ITransactionService, TransactionService>();
 
             // External
-            services.AddScoped<IAssetInformationService, BrApiInformationService>();
+            services.AddKeyedScoped<IAssetInformationService, BrApiInformationService>(Currency.BRL);
+            services.AddKeyedScoped<IAssetInformationService, YahooFinanceInformationService>(Currency.CAD);
         }
     }
 }

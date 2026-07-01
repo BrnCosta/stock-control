@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace StockControl.Core.Responses.BrApi
+namespace StockControl.Core.Responses.External
 {
     public class BrApiResponse
     {
@@ -13,6 +13,7 @@ namespace StockControl.Core.Responses.BrApi
 
     public class BrApiMarketResultInformation
     {
+        public required string Symbol { get; set; }
         public required decimal RegularMarketPrice { get; set; }
     }
 

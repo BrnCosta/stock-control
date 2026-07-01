@@ -11,5 +11,6 @@
     public decimal CurrentGain { get; set; }
     public decimal GainPercentage { get; set; }
     public required string AssetType { get; set; }
+    public required string Currency { get; set; }
   }
 }

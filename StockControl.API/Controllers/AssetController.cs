@@ -21,7 +21,7 @@ namespace StockControl.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "An error occurred while recovering all tickers.", Details = ex.Message });
+                return StatusCode(500, new { ex.Message, ex.InnerException });
             }
         }
 
@@ -41,7 +41,7 @@ namespace StockControl.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "An error occurred while updating asset prices.", Details = ex.Message });
+                return StatusCode(500, new { ex.Message, ex.InnerException });
             }
         }
     }

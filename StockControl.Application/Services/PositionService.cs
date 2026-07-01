@@ -24,27 +24,22 @@ namespace StockControl.Application.Services
             return positionOverviewList;
         }
 
-        public async Task<PositionWalletOverviewResponse> GetOverview()
+        public IEnumerable<AssetTypeOverviewResponse> GetOverview()
         {
-            var groupedByType = _unitOfWork.PositionRepository.GetAll()
-                .GroupBy(x => x.Asset.Type)
+            return _unitOfWork.PositionRepository.GetAll()
+                .GroupBy(x => new { x.Asset.Type, x.Asset.Currency })
                 .Select(x => new AssetTypeOverviewResponse
                 {
                     AssetType = x.FirstOrDefault()!.Asset.Type.ToString(),
                     Value = x.Sum(p => p.Quantity * p.Asset.Price),
+                    Currency = x.FirstOrDefault()!.Asset.Currency.ToString()
                 });
-
-            return new PositionWalletOverviewResponse
-            {
-                AssetTypes = groupedByType,
-                TotalValue = groupedByType.Sum(g => g.Value)
-            };
         }
 
-        public PositionBalanceResponse GetBalanceOverall()
+        public IEnumerable<PositionBalanceResponse> GetBalanceOverall()
         {
             var currentPositions = _unitOfWork.PositionRepository.GetAll();
-            return GeneratePositionBalance(currentPositions);
+            return GeneratePositionBalanceByCurrency(currentPositions);
         }
 
         public Position CreateOrUpdatePosition(Asset asset, Transaction transaction)
@@ -134,7 +129,22 @@ namespace StockControl.Application.Services
             }
         }
 
-        private static PositionBalanceResponse GeneratePositionBalance(IEnumerable<Position> positions)
+        private static List<PositionBalanceResponse> GeneratePositionBalanceByCurrency(IEnumerable<Position> positions)
+        {
+            var balanceGroupBy = new List<PositionBalanceResponse>();
+
+            var groupedByCurrency = positions.GroupBy(p => p.Asset.Currency);
+
+            foreach (var currency in groupedByCurrency)
+            {
+                var balance = GeneratePositionBalance(currency, currency.Key);
+                balanceGroupBy.Add(balance);
+            }
+
+            return balanceGroupBy;
+        }
+
+        private static PositionBalanceResponse GeneratePositionBalance(IEnumerable<Position> positions, Currency currency)
         {
             var balance = new PositionBalanceResponse();
 
@@ -143,6 +153,7 @@ namespace StockControl.Application.Services
                 var overview = GeneratePositionOverview(position);
                 balance.TotalInvested += overview.TotalInvested;
                 balance.CurrentInvested += overview.CurrentInvested;
+                balance.Currency = currency.ToString();
             }
 
             balance.TotalGain = balance.CurrentInvested - balance.TotalInvested;
@@ -163,7 +174,8 @@ namespace StockControl.Application.Services
                 CurrentInvested = position.Asset.Price * position.Quantity,
                 CurrentGain = (position.Asset.Price * position.Quantity) - (position.AveragePrice * position.Quantity),
                 GainPercentage = ((position.Asset.Price * position.Quantity) - (position.AveragePrice * position.Quantity)) / (position.AveragePrice * position.Quantity) * 100,
-                AssetType = position.Asset.Type.ToString()
+                AssetType = position.Asset.Type.ToString(),
+                Currency = position.Asset.Currency.ToString()
             };
         }
 

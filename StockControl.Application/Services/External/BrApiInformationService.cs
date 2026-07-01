@@ -1,7 +1,7 @@
 ﻿using StockControl.Core.Enums;
 using StockControl.Core.Interfaces.Services.External;
 using StockControl.Core.Responses;
-using StockControl.Core.Responses.BrApi;
+using StockControl.Core.Responses.External;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Authentication;
@@ -28,7 +28,7 @@ namespace StockControl.Application.Services.External
             return assetInformationResult;
         }
 
-        public async Task<AssetType> GetAssetType(string ticker)
+        private async Task<AssetType> GetAssetType(string ticker)
         {
             string apiUrl = string.Concat(BRAPI_LIST_SEARCH_URL, ticker);
 

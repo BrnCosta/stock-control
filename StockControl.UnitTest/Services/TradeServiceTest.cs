@@ -45,7 +45,7 @@ namespace StockControl.UnitTest.Services
                     Ticker = "",
                     Quantity = 100,
                     Price = 50,
-                    OperatingType = OperationType.Buy
+                    OperatingType = OperationType.Buy.ToString()
                 }]
             };
 
@@ -67,7 +67,7 @@ namespace StockControl.UnitTest.Services
                     Ticker = "AAPL",
                     Quantity = 100,
                     Price = 50,
-                    OperatingType = OperationType.Buy
+                    OperatingType = OperationType.Buy.ToString()
                 }]
             };
 
@@ -89,7 +89,7 @@ namespace StockControl.UnitTest.Services
                     Ticker = "AAPL",
                     Quantity = 100,
                     Price = 50,
-                    OperatingType = OperationType.Buy
+                    OperatingType = OperationType.Buy.ToString()
                 }]
             };
 
@@ -115,7 +115,7 @@ namespace StockControl.UnitTest.Services
                     Ticker = "AAPL",
                     Quantity = 100,
                     Price = 50,
-                    OperatingType = OperationType.Buy
+                    OperatingType = OperationType.Buy.ToString()
                 }]
             };
 

@@ -24,7 +24,7 @@ namespace StockControl.API.Controllers
         [HttpGet("wallet")]
         public async Task<IActionResult> GetWalletOverview()
         {
-            return Ok(await _positionService.GetOverview());
+            return Ok(_positionService.GetOverview());
         }
     }
 }

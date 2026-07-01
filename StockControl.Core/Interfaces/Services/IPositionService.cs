@@ -6,8 +6,8 @@ namespace StockControl.Core.Interfaces.Services
     public interface IPositionService
     {
         IEnumerable<PositionAssetOverviewResponse> GetAllAssetCurrentPosition();
-        PositionBalanceResponse GetBalanceOverall();
+        IEnumerable<PositionBalanceResponse> GetBalanceOverall();
+        IEnumerable<AssetTypeOverviewResponse> GetOverview();
         Position CreateOrUpdatePosition(Asset asset, Transaction transaction);
-        Task<PositionWalletOverviewResponse> GetOverview();
     }
 }

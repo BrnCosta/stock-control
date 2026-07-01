@@ -12,5 +12,6 @@ namespace StockControl.Core.Responses.Position
         public decimal CurrentInvested { get; set; }
         public decimal TotalGain { get; set; }
         public decimal GainPercentage { get; set; }
+        public string Currency { get; set; }
     }
 }
