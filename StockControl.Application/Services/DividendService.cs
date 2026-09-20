@@ -44,12 +44,13 @@ namespace StockControl.Application.Services
             var allDividends = _unitOfWork.DividendRepository.GetAll();
 
             var groupByMonth = allDividends
-              .GroupBy(d => new { d.Date.Year, d.Date.Month })
+              .GroupBy(d => new { d.Asset.Currency, d.Date.Year, d.Date.Month })
               .Select(g => new DividendGroupByMonthResponse
               {
                   Year = g.Key.Year,
                   Month = g.Key.Month,
-                  TotalValue = g.Sum(d => d.Value)
+                  TotalValue = g.Sum(d => d.Value),
+                  Currency = g.Key.Currency.ToString()
               })
               .OrderBy(summary => summary.Year)
               .ThenBy(summary => summary.Month);
@@ -62,13 +63,14 @@ namespace StockControl.Application.Services
             var allDividends = _unitOfWork.DividendRepository.GetAll();
 
             var groupByTicker = allDividends
-              .GroupBy(d => new { d.Asset.Ticker, d.Date.Year, d.Date.Month })
+              .GroupBy(d => new { d.Asset.Currency, d.Asset.Ticker, d.Date.Year, d.Date.Month })
               .Select(g => new DividendGroupByTickerResponse
               {
                   Year = g.Key.Year,
                   Month = g.Key.Month,
                   TotalValue = g.Sum(d => d.Value),
-                  Asset = g.Key.Ticker
+                  Asset = g.Key.Ticker,
+                  Currency = g.Key.Currency.ToString()
               })
               .OrderBy(summary => summary.Year)
               .ThenBy(summary => summary.Month)

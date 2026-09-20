@@ -11,6 +11,7 @@ namespace StockControl.Core.Responses
         public int Year { get; set; }
         public int Month { get; set; }
         public decimal TotalValue { get; set; }
+        public required string Currency { get; set; }
     }
 
     public class DividendGroupByTickerResponse : DividendGroupByMonthResponse
